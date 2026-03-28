@@ -24,7 +24,9 @@ LLM routing: `USE_LOCAL_LLM=true` → Ollama (free/local) · `false` → GPT-5.4
 ```bash
 git clone https://github.com/alexjustdoit/discovery-assistant.git
 cd discovery-assistant
-cp .env.example .env   # fill in your API keys
+cp .env.example .env          # fill in your API keys
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 streamlit run app/streamlit_app.py --server.address 0.0.0.0
 ```
@@ -36,6 +38,11 @@ hostname -I | awk '{print $1}'
 ```
 
 Then open `http://<WSL2-IP>:8501` in your Windows browser.
+
+> **Note:** In new terminal sessions, always activate the venv first:
+> ```bash
+> source venv/bin/activate
+> ```
 
 ## Environment Variables
 
@@ -53,6 +60,7 @@ When `USE_LOCAL_LLM=false`, `OPENAI_API_KEY` is required. `ANTHROPIC_API_KEY` is
 ## Running Tests
 
 ```bash
+source venv/bin/activate
 pytest tests/ -v
 ```
 
