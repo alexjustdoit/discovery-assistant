@@ -1,4 +1,5 @@
 """Tests for session persistence (store.py)."""
+import json
 import os
 import tempfile
 from pathlib import Path
@@ -7,7 +8,7 @@ from unittest.mock import patch
 import pytest
 
 from data.models import DiscoveryMode, Question, Session, SessionContext
-from data.store import delete_session, list_sessions, load_session, save_session
+from data.store import delete_session, list_sessions, load_session, save_session, seed_demo_sessions
 
 
 def make_session() -> Session:
@@ -77,3 +78,81 @@ def test_save_updates_updated_at(tmp_sessions_dir):
     save_session(session)
     loaded = load_session(session.id)
     assert loaded.updated_at >= original_updated_at
+
+
+# ── seed_demo_sessions ────────────────────────────────────────────────────────
+
+@pytest.fixture
+def demo_sessions_dir(tmp_path):
+    """A temp dir acting as DEMO_SESSIONS_DIR with one sample session JSON."""
+    demo_dir = tmp_path / "demo_sessions"
+    demo_dir.mkdir()
+    session = make_session()
+    (demo_dir / f"{session.id}.json").write_text(session.model_dump_json())
+    return demo_dir, session
+
+
+def test_seed_demo_sessions_copies_to_sessions_dir(tmp_sessions_dir, demo_sessions_dir, monkeypatch):
+    demo_dir, demo_session = demo_sessions_dir
+    monkeypatch.setattr("data.store._sessions_dir", lambda: tmp_sessions_dir)
+    with patch("data.store.DEMO_SESSIONS_DIR" if False else "config.DEMO_SESSIONS_DIR", demo_dir, create=True):
+        # Patch the import inside seed_demo_sessions
+        with patch("data.store.seed_demo_sessions.__globals__", {}) if False else patch("config.DEMO_SESSIONS_DIR", demo_dir):
+            pass
+
+    # Directly call with monkeypatched DEMO_SESSIONS_DIR via the import inside the function
+    import config
+    original = config.DEMO_SESSIONS_DIR
+    config.DEMO_SESSIONS_DIR = demo_dir
+    try:
+        seed_demo_sessions()
+        loaded = load_session(demo_session.id)
+        assert loaded.id == demo_session.id
+    finally:
+        config.DEMO_SESSIONS_DIR = original
+
+
+def test_seed_demo_sessions_is_idempotent(tmp_sessions_dir, demo_sessions_dir, monkeypatch):
+    demo_dir, demo_session = demo_sessions_dir
+    monkeypatch.setattr("data.store._sessions_dir", lambda: tmp_sessions_dir)
+    import config
+    original = config.DEMO_SESSIONS_DIR
+    config.DEMO_SESSIONS_DIR = demo_dir
+    try:
+        seed_demo_sessions()
+        seed_demo_sessions()
+        assert len(list(tmp_sessions_dir.glob("*.json"))) == 1
+    finally:
+        config.DEMO_SESSIONS_DIR = original
+
+
+def test_seed_demo_sessions_does_not_overwrite_existing(tmp_sessions_dir, demo_sessions_dir, monkeypatch):
+    demo_dir, demo_session = demo_sessions_dir
+    monkeypatch.setattr("data.store._sessions_dir", lambda: tmp_sessions_dir)
+
+    # Pre-write a modified version of the demo session
+    modified = demo_session.model_copy()
+    modified.context.company = "User Modified Co"
+    (tmp_sessions_dir / f"{demo_session.id}.json").write_text(modified.model_dump_json())
+
+    import config
+    original = config.DEMO_SESSIONS_DIR
+    config.DEMO_SESSIONS_DIR = demo_dir
+    try:
+        seed_demo_sessions()
+        loaded = load_session(demo_session.id)
+        assert loaded.context.company == "User Modified Co"
+    finally:
+        config.DEMO_SESSIONS_DIR = original
+
+
+def test_seed_demo_sessions_missing_dir_is_noop(tmp_sessions_dir, monkeypatch, tmp_path):
+    monkeypatch.setattr("data.store._sessions_dir", lambda: tmp_sessions_dir)
+    import config
+    original = config.DEMO_SESSIONS_DIR
+    config.DEMO_SESSIONS_DIR = tmp_path / "nonexistent"
+    try:
+        seed_demo_sessions()  # should not raise
+        assert list_sessions() == []
+    finally:
+        config.DEMO_SESSIONS_DIR = original

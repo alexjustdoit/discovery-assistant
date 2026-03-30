@@ -81,3 +81,24 @@ def test_post_sales_mode():
     assert session.mode == DiscoveryMode.POST_SALES
     data = json.loads(session.model_dump_json())
     assert data["mode"] == "post_sales"
+
+
+def test_session_email_draft_defaults_to_none():
+    session = make_session()
+    assert session.email_draft is None
+
+
+def test_session_email_draft_roundtrip():
+    session = make_session()
+    session.email_draft = "Subject: Follow-up\n\nHi team, thanks for the call."
+    restored = Session.model_validate_json(session.model_dump_json())
+    assert restored.email_draft == session.email_draft
+
+
+def test_session_email_draft_none_roundtrip():
+    """Sessions without email_draft (e.g. existing JSON files) load cleanly."""
+    session = make_session()
+    data = json.loads(session.model_dump_json())
+    data.pop("email_draft", None)  # simulate old session file without the field
+    restored = Session.model_validate_json(json.dumps(data))
+    assert restored.email_draft is None

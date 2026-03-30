@@ -8,9 +8,11 @@ from features.question_generation import (
     POST_SALES_CATEGORIES,
     PRE_SALES_CATEGORIES,
     QUESTIONS_PER_CATEGORY,
+    REFRESH_QUESTIONS_PER_CATEGORY,
     _QuestionBank,
     _GeneratedQuestion,
     generate_questions,
+    generate_additional_questions,
 )
 
 
@@ -100,3 +102,64 @@ def test_questions_not_mutated_into_session(mock_router):
     assert session.questions == []
     generate_questions(session)
     assert session.questions == []
+
+
+# ── generate_additional_questions ────────────────────────────────────────────
+
+def _mock_refresh_bank(categories: list[str]) -> _QuestionBank:
+    questions = []
+    for cat in categories:
+        for i in range(REFRESH_QUESTIONS_PER_CATEGORY):
+            questions.append(
+                _GeneratedQuestion(
+                    category=cat,
+                    text=f"Refresh question {i+1} for {cat}?",
+                    follow_ups=[],
+                )
+            )
+    return _QuestionBank(questions=questions)
+
+
+@patch("features.question_generation.router")
+def test_generate_additional_questions_returns_fewer_per_category(mock_router):
+    session = make_session()
+    mock_provider = MagicMock()
+    mock_provider.complete_structured.return_value = (_mock_refresh_bank(PRE_SALES_CATEGORIES), MagicMock())
+    mock_router.get_provider.return_value = mock_provider
+
+    questions = generate_additional_questions(session)
+
+    assert len(questions) == len(PRE_SALES_CATEGORIES) * REFRESH_QUESTIONS_PER_CATEGORY
+    assert REFRESH_QUESTIONS_PER_CATEGORY < QUESTIONS_PER_CATEGORY
+
+
+@patch("features.question_generation.router")
+def test_generate_additional_questions_does_not_mutate_session(mock_router):
+    session = make_session()
+    mock_provider = MagicMock()
+    mock_provider.complete_structured.return_value = (_mock_refresh_bank(PRE_SALES_CATEGORIES), MagicMock())
+    mock_router.get_provider.return_value = mock_provider
+
+    assert session.questions == []
+    generate_additional_questions(session)
+    assert session.questions == []
+
+
+@patch("features.question_generation.router")
+def test_generate_additional_questions_passes_existing_to_prompt(mock_router):
+    """Existing question texts should appear in the user prompt sent to the LLM."""
+    from data.models import Question
+    session = make_session()
+    session.questions = [
+        Question(category="Technical Fit", text="What is your current solution?", asked=True, answer="We use Excel."),
+        Question(category="Technical Fit", text="How long does reporting take?", asked=False),
+    ]
+    mock_provider = MagicMock()
+    mock_provider.complete_structured.return_value = (_mock_refresh_bank(PRE_SALES_CATEGORIES), MagicMock())
+    mock_router.get_provider.return_value = mock_provider
+
+    generate_additional_questions(session)
+
+    _, user_prompt, _ = mock_provider.complete_structured.call_args[0]
+    assert "What is your current solution?" in user_prompt
+    assert "How long does reporting take?" in user_prompt
