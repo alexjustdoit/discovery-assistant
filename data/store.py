@@ -40,3 +40,26 @@ def delete_session(session_id: str) -> None:
     path = _sessions_dir() / f"{session_id}.json"
     if path.exists():
         path.unlink()
+
+
+def seed_demo_sessions() -> None:
+    """Copy demo session files into sessions dir if not already present.
+
+    Idempotent — skips any demo session whose ID already exists in sessions/.
+    This preserves user edits to demo sessions across restarts.
+    """
+    from config import DEMO_SESSIONS_DIR
+
+    if not DEMO_SESSIONS_DIR.exists():
+        return
+
+    sessions_dir = _sessions_dir()
+    for demo_path in DEMO_SESSIONS_DIR.glob("*.json"):
+        try:
+            data = json.loads(demo_path.read_text())
+            session_id = data.get("id", "")
+            dest = sessions_dir / f"{session_id}.json"
+            if not dest.exists():
+                dest.write_text(demo_path.read_text())
+        except Exception:
+            pass

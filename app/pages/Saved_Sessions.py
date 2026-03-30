@@ -22,7 +22,7 @@ for session in sessions:
         with col1:
             st.markdown(f"**{session.context.company}**")
             st.caption(f"{mode_label} · {session.context.stage} · {session.context.industry}")
-            st.caption(f"{summary_badge} · Created {session.created_at.strftime('%b %d, %Y')}")
+            st.caption(f"{summary_badge} · Updated {session.updated_at.strftime('%b %d, %Y')}")
         with col2:
             if st.button("Open", key=f"open_{session.id}", use_container_width=True):
                 st.session_state["active_session_id"] = session.id

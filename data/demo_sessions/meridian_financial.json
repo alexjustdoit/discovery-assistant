@@ -1,0 +1,281 @@
+{
+  "id": "a1b2c3d4-0001-4000-8000-ef1234567890",
+  "mode": "pre_sales",
+  "context": {
+    "company": "Meridian Financial",
+    "industry": "FinTech / Wealth Management",
+    "use_case": "Real-time portfolio risk analytics and automated regulatory reporting. Currently running overnight batch jobs in Excel and legacy SAS \u2014 want to move to a modern streaming data platform.",
+    "tech_stack": "On-prem Oracle DB, SAS, Excel, Tableau. Azure tenant exists but underutilized.",
+    "stage": "Initial Discovery",
+    "notes": "Champion is VP of Data Engineering (Marcus Chen). CTO is aware but not engaged yet. Budget cycle closes Q2."
+  },
+  "questions": [
+    {
+      "id": "q-mf-001",
+      "category": "Technical Fit",
+      "text": "Walk me through how your current portfolio risk calculations run today \u2014 what triggers them and how long do they take?",
+      "asked": true,
+      "answer": "Currently run overnight batch jobs in SAS \u2014 takes 4\u20136 hours. Risk team gets results by 7am. During volatile market days this is painful, they\u2019ve missed early warning signals twice this year.",
+      "follow_ups": [
+        "What\u2019s the downstream impact when results are late?",
+        "Who owns that process today \u2014 data engineering or the risk team themselves?"
+      ]
+    },
+    {
+      "id": "q-mf-002",
+      "category": "Technical Fit",
+      "text": "What does \u2018real-time\u2019 mean to your risk team \u2014 are we talking seconds, minutes, or same-day?",
+      "asked": true,
+      "answer": "Minutes would be transformative. They said if they could refresh every 15 minutes during trading hours that alone would be a massive win. Sub-minute is aspirational but not a hard requirement.",
+      "follow_ups": [
+        "Is there a specific SLA or regulatory window that drives that number?",
+        "Who would consume that real-time feed \u2014 automated systems, analysts, or both?"
+      ]
+    },
+    {
+      "id": "q-mf-003",
+      "category": "Technical Fit",
+      "text": "Where does your portfolio data live today, and how many sources are you pulling from?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Are any of those sources external data providers or just internal systems?",
+        "Is data ownership centralized or does each desk manage its own?"
+      ]
+    },
+    {
+      "id": "q-mf-004",
+      "category": "Technical Fit",
+      "text": "What would a successful outcome look like 6 months after go-live?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Who would be measuring that success \u2014 Marcus, the risk team, or leadership?",
+        "Are there specific metrics or KPIs already defined?"
+      ]
+    },
+    {
+      "id": "q-mf-005",
+      "category": "Integrations & Architecture",
+      "text": "Tell me about your current data pipeline \u2014 how does data flow from trading systems into your analytics layer?",
+      "asked": true,
+      "answer": "Trading data comes from Bloomberg terminal, goes into Oracle, then SAS pulls from Oracle. Very manual handoffs at each step. Marcus described it as \u2018held together with duct tape.\u2019",
+      "follow_ups": [
+        "What happens when that pipeline breaks \u2014 who gets paged and how long does recovery take?",
+        "Are there any automated quality checks along the way?"
+      ]
+    },
+    {
+      "id": "q-mf-006",
+      "category": "Integrations & Architecture",
+      "text": "You mentioned Azure is underutilized \u2014 is there a cloud-first mandate or preference, or is hybrid on the table?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Who made the Azure decision and are they still involved in infrastructure decisions?",
+        "Is there a timeline or forcing function to increase cloud utilization?"
+      ]
+    },
+    {
+      "id": "q-mf-007",
+      "category": "Integrations & Architecture",
+      "text": "What monitoring or observability do you have over your current pipelines when something breaks?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "How are incidents reported today \u2014 email, Slack, PagerDuty?",
+        "Is there a dedicated platform engineering team or does data engineering own ops too?"
+      ]
+    },
+    {
+      "id": "q-mf-008",
+      "category": "Integrations & Architecture",
+      "text": "Are there any existing CDC or streaming tools in play, even for other use cases?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Has Kafka or Flink been evaluated before?",
+        "What was the outcome if so?"
+      ]
+    },
+    {
+      "id": "q-mf-009",
+      "category": "Security & Compliance",
+      "text": "What regulatory frameworks are you subject to \u2014 SEC, FINRA, others?",
+      "asked": true,
+      "answer": "SEC and FINRA primary. Also SOC 2 Type II for their institutional clients. The regulatory reporting piece is actually a bigger pain than analytics \u2014 they have 3 people manually assembling reports every quarter.",
+      "follow_ups": [
+        "Are there specific report formats or submission deadlines that drive the urgency?",
+        "Has a regulator ever flagged a reporting issue?"
+      ]
+    },
+    {
+      "id": "q-mf-010",
+      "category": "Security & Compliance",
+      "text": "How do you handle PII and sensitive financial data in transit and at rest today?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Is encryption enforced at the database level or left to the application?",
+        "Have you had a third-party security audit recently?"
+      ]
+    },
+    {
+      "id": "q-mf-011",
+      "category": "Security & Compliance",
+      "text": "Do you have a formal data classification policy, and who owns security review for new vendors?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Is there a CISO or security team separate from IT?",
+        "What does a typical vendor security questionnaire process look like?"
+      ]
+    },
+    {
+      "id": "q-mf-012",
+      "category": "Security & Compliance",
+      "text": "What\u2019s your typical security review timeline for new SaaS vendors?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Is there a preferred deployment model \u2014 cloud, VPC, on-prem?",
+        "Has a security review ever killed a vendor deal?"
+      ]
+    },
+    {
+      "id": "q-mf-013",
+      "category": "Stakeholder Mapping",
+      "text": "Beyond Marcus, who else would be involved in evaluating and approving a new data platform?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Is there a formal committee or is it more informal sign-off?",
+        "Who has veto power if they\u2019re not convinced?"
+      ]
+    },
+    {
+      "id": "q-mf-014",
+      "category": "Stakeholder Mapping",
+      "text": "Is there a procurement or vendor management team we\u2019d need to go through?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Do they have preferred vendor lists or contract templates?",
+        "How long does procurement typically add to a deal cycle?"
+      ]
+    },
+    {
+      "id": "q-mf-015",
+      "category": "Stakeholder Mapping",
+      "text": "Where does this initiative sit in terms of priority for the CTO \u2014 is it a 2026 strategic priority?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Has it been budgeted already or is it still seeking approval?",
+        "What competing initiatives is the CTO focused on this year?"
+      ]
+    },
+    {
+      "id": "q-mf-016",
+      "category": "Stakeholder Mapping",
+      "text": "Who would be the primary users of the platform day-to-day \u2014 data engineers, analysts, or both?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "What\u2019s the technical level of the end users \u2014 do they write code or prefer no-code?",
+        "Is there a preference for self-serve or managed tooling?"
+      ]
+    },
+    {
+      "id": "q-mf-017",
+      "category": "POC Scoping",
+      "text": "If we ran a POC, what would need to be true for it to be successful in your eyes?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Would success be technical, or would business stakeholders need to see it too?",
+        "Is there a specific use case you\u2019d want to validate first?"
+      ]
+    },
+    {
+      "id": "q-mf-018",
+      "category": "POC Scoping",
+      "text": "What\u2019s a realistic timeline for a POC given your team\u2019s current bandwidth?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Are there any blackout periods \u2014 quarter-end, reporting deadlines, vacations?",
+        "Would the POC need to run in a sandbox or against live data?"
+      ]
+    },
+    {
+      "id": "q-mf-019",
+      "category": "POC Scoping",
+      "text": "Would you want to use your own data in a POC, or would synthetic data be acceptable?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Are there data governance approvals needed to use real data in a POC environment?",
+        "What format is your data in \u2014 could we get a sample to prep?"
+      ]
+    },
+    {
+      "id": "q-mf-020",
+      "category": "POC Scoping",
+      "text": "What resources could you commit to a POC \u2014 data engineers, a dedicated SME, infrastructure access?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Would Marcus be the day-to-day POC owner or would it be delegated?",
+        "Is there a preferred project management approach \u2014 shared Slack, weekly syncs?"
+      ]
+    },
+    {
+      "id": "q-mf-021",
+      "category": "Competitive",
+      "text": "Are you evaluating any other vendors alongside us?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "How did you find out about us \u2014 analyst report, peer recommendation, outreach?",
+        "Is there a structured RFP process or more informal?"
+      ]
+    },
+    {
+      "id": "q-mf-022",
+      "category": "Competitive",
+      "text": "What would make you choose not to go with any new platform \u2014 i.e., what\u2019s the \u2018do nothing\u2019 scenario?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Have you tried to modernize this stack before and hit obstacles?",
+        "What would have to happen for the CTO to kill the initiative?"
+      ]
+    },
+    {
+      "id": "q-mf-023",
+      "category": "Competitive",
+      "text": "Have you looked at open-source streaming solutions like Kafka or Flink?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Is there appetite to manage open-source infrastructure, or is managed/SaaS preferred?",
+        "What\u2019s your team\u2019s experience level with streaming architectures?"
+      ]
+    },
+    {
+      "id": "q-mf-024",
+      "category": "Competitive",
+      "text": "What\u2019s driven vendor decisions in the past \u2014 price, technical fit, support reputation, or something else?",
+      "asked": false,
+      "answer": "",
+      "follow_ups": [
+        "Who has the most influence over the final vendor recommendation?",
+        "Has a vendor ever won on price over technical fit here?"
+      ]
+    }
+  ],
+  "summary": null,
+  "created_at": "2026-03-15T14:22:00+00:00",
+  "updated_at": "2026-03-22T10:45:00+00:00"
+}

@@ -24,3 +24,5 @@ CLAUDE_MODEL: str = os.getenv("CLAUDE_MODEL", "claude-haiku-4-5-20251001")
 # Session storage
 SESSIONS_DIR: Path = Path(__file__).parent / "data" / "sessions"
 SESSIONS_DIR.mkdir(parents=True, exist_ok=True)
+
+DEMO_SESSIONS_DIR: Path = Path(__file__).parent / "data" / "demo_sessions"

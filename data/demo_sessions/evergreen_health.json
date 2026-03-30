@@ -1,0 +1,267 @@
+{
+  "id": "b2c3d4e5-0002-4000-8001-f12345678901",
+  "mode": "post_sales",
+  "context": {
+    "company": "Evergreen Health Systems",
+    "industry": "Healthcare / Hospital Networks",
+    "use_case": "Care coordination platform for multi-site hospital network. Manages patient handoffs, care team communication, and readmission tracking across 8 hospitals.",
+    "tech_stack": "Epic EHR, Microsoft Teams, Azure, Power BI, custom Node.js integrations",
+    "stage": "Renewal Q2 \u2014 At-Risk",
+    "notes": "Original champion (Dr. Sarah Kim, CMO) left the organization in January. Current contact is IT Director (James Tran) who wasn\u2019t involved in original purchase. Usage dropped 40% since Q3. Renewal value: $380K ARR. Renewal date: June 1, 2026."
+  },
+  "questions": [
+    {
+      "id": "q-eh-001",
+      "category": "Expansion Signals",
+      "text": "Outside of care coordination, are there other departments or use cases where you\u2019ve seen appetite for a tool like this?",
+      "asked": true,
+      "answer": "ED triage team expressed interest last year but it never went anywhere. James said he\u2019d be open to a conversation about it but needs to understand the current product better first. No active expansion discussions.",
+      "follow_ups": [
+        "Was the ED interest driven by a specific pain point or just general curiosity?",
+        "Is there a budget owner for ED technology separate from IT?"
+      ]
+    },
+    {
+      "id": "q-eh-002",
+      "category": "Expansion Signals",
+      "text": "Have any of your 8 hospitals gone significantly deeper on adoption than the others?",
+      "asked": true,
+      "answer": "Yes \u2014 Evergreen Main and Eastside are the power users. The other 6 are minimal. The difference seems to be that those two had engaged nurse champions during rollout who kept training up. The other sites didn\u2019t have that.",
+      "follow_ups": [
+        "What did those nurse champions do differently that drove adoption?",
+        "Is there any cross-site communication between power users and lagging sites?"
+      ]
+    },
+    {
+      "id": "q-eh-003",
+      "category": "Expansion Signals",
+      "text": "Is there interest in expanding to any outpatient or affiliated clinics beyond the hospital network?",
+      "asked": true,
+      "answer": "Not a current priority. They\u2019re focused on stabilizing within the 8 hospitals first. James was direct \u2014 expansion conversations feel premature given where adoption is today.",
+      "follow_ups": [
+        "Is there a longer-term roadmap where outpatient coordination is a goal?",
+        "Who would own that decision \u2014 IT or clinical leadership?"
+      ]
+    },
+    {
+      "id": "q-eh-004",
+      "category": "Expansion Signals",
+      "text": "What does your growth plan look like over the next 12\u201318 months \u2014 any new facilities or service lines?",
+      "asked": true,
+      "answer": "Potential acquisition of a regional clinic network in Q4 2026 but nothing confirmed yet. James mentioned it offhand \u2014 if it happens, they\u2019d need to evaluate how the platform extends to the new sites.",
+      "follow_ups": [
+        "Who\u2019s driving the acquisition decision \u2014 is this C-suite led?",
+        "Would the clinic network come with its own tech stack that would need to be integrated?"
+      ]
+    },
+    {
+      "id": "q-eh-005",
+      "category": "Health & Risk",
+      "text": "Help me understand the 40% drop in usage we\u2019re seeing \u2014 was that a gradual decline or did something specific trigger it?",
+      "asked": true,
+      "answer": "It started after Dr. Kim left in January. She ran weekly training sessions and was the internal champion who kept adoption visible. No one stepped in. James acknowledged this was an internal failure, not a product failure.",
+      "follow_ups": [
+        "Did the usage drop happen immediately or over a few months?",
+        "Is leadership aware that the departure caused this, or is there any blame attributed to the product?"
+      ]
+    },
+    {
+      "id": "q-eh-006",
+      "category": "Health & Risk",
+      "text": "How are clinical staff feeling about the platform today \u2014 are we hearing complaints, or is it more just unused?",
+      "asked": true,
+      "answer": "Mixed. Nurses who use it regularly love it. The drop-off is mostly care coordinators who never fully adopted \u2014 there\u2019s no executive pressure to use it so it\u2019s fallen off the radar. Not negative sentiment, just apathy.",
+      "follow_ups": [
+        "Have there been any formal feedback surveys or NPS-style input from clinical staff?",
+        "Is there a clinical informatics team that tracks tool adoption?"
+      ]
+    },
+    {
+      "id": "q-eh-007",
+      "category": "Health & Risk",
+      "text": "What would need to happen for this to feel like a success story for Evergreen 12 months from now?",
+      "asked": true,
+      "answer": "James said he needs to show measurable outcomes to his CFO. Specifically wants readmission rate data tied to platform usage, but he doesn\u2019t know how to pull that from our system. He\u2019s also mentioned wanting broader adoption across all 8 hospitals.",
+      "follow_ups": [
+        "Is there a specific readmission rate target they\u2019re working toward?",
+        "Would a before/after comparison from the two high-adoption sites be compelling?"
+      ]
+    },
+    {
+      "id": "q-eh-008",
+      "category": "Health & Risk",
+      "text": "Is there any internal sentiment that the platform hasn\u2019t delivered on what was promised during the sale?",
+      "asked": true,
+      "answer": "Some. The original business case was built around Dr. Kim\u2019s priorities. James has seen the contract but wasn\u2019t part of the original pitch, so he doesn\u2019t feel ownership over those goals. He\u2019s essentially evaluating us fresh without the context of what was promised.",
+      "follow_ups": [
+        "Does James have access to the original success metrics from the contract?",
+        "Would it help to do a formal business review to re-anchor expectations?"
+      ]
+    },
+    {
+      "id": "q-eh-009",
+      "category": "Adoption Gaps",
+      "text": "Walk me through what a typical week looks like for a care coordinator using the platform.",
+      "asked": true,
+      "answer": "At the 2 high-adoption sites, coordinators check the platform every morning for handoff alerts, update care notes 2\u20133x per day. At low-adoption sites, they log in maybe once a week if that \u2014 primarily to check on flagged patients.",
+      "follow_ups": [
+        "Is there a difference in patient outcomes that\u2019s visible between the high- and low-adoption sites?",
+        "What does the login/activity data show for the 6 lagging hospitals?"
+      ]
+    },
+    {
+      "id": "q-eh-010",
+      "category": "Adoption Gaps",
+      "text": "What\u2019s the most common reason you hear for not using the platform regularly?",
+      "asked": true,
+      "answer": "Two main reasons: 1) Staff default to Teams for quick communication and don\u2019t see the value in switching context. 2) The mobile app has been glitchy on older hospital iPads and IT hasn\u2019t pushed the latest update yet.",
+      "follow_ups": [
+        "Is there a way to surface the platform\u2019s value within Teams itself \u2014 e.g. a bot or integration?",
+        "What\u2019s the timeline on pushing the iPad update \u2014 is that within IT\u2019s control?"
+      ]
+    },
+    {
+      "id": "q-eh-011",
+      "category": "Adoption Gaps",
+      "text": "Are there features you purchased that your team isn\u2019t using yet?",
+      "asked": true,
+      "answer": "The analytics dashboard \u2014 they\u2019ve never really used it. James didn\u2019t know it existed until I mentioned it today. Also the Epic bi-directional sync has only been turned on for one hospital. The other 7 are still one-way.",
+      "follow_ups": [
+        "What would it take to enable Epic bi-directional sync at the other 7 hospitals?",
+        "Would a guided walkthrough of the analytics dashboard be valuable \u2014 perhaps with James and Maria?"
+      ]
+    },
+    {
+      "id": "q-eh-012",
+      "category": "Adoption Gaps",
+      "text": "What does onboarding look like for new hires \u2014 are they getting trained on the platform?",
+      "asked": true,
+      "answer": "No formal process. New hires shadow existing staff, and if their team doesn\u2019t use the platform, they don\u2019t learn it. IT doesn\u2019t own onboarding for clinical tools \u2014 it falls to department managers who have no playbook.",
+      "follow_ups": [
+        "Is there a clinical education team or L&D function we could partner with to build onboarding materials?",
+        "Would Evergreen be open to a joint onboarding playbook we develop together?"
+      ]
+    },
+    {
+      "id": "q-eh-013",
+      "category": "Renewal Readiness",
+      "text": "When does the renewal come up, and who has authority to sign?",
+      "asked": true,
+      "answer": "Renewal is June 1, 2026. James has authority up to $200K \u2014 above that needs CFO (Linda Park) approval. At $380K this requires CFO sign-off and James wants to avoid that conversation unless he\u2019s confident in the value story.",
+      "follow_ups": [
+        "Has James met with Linda Park about this renewal yet?",
+        "What does Linda Park typically need to see to approve SaaS spend at this level?"
+      ]
+    },
+    {
+      "id": "q-eh-014",
+      "category": "Renewal Readiness",
+      "text": "What would make you feel confident recommending renewal to your CFO?",
+      "asked": true,
+      "answer": "Three things: 1) A clear ROI story with Evergreen-specific data, 2) A concrete plan to improve adoption at the 6 lagging hospitals, 3) Ideally a reference call with a similar health system that renewed. He was very specific about these.",
+      "follow_ups": [
+        "Is there a format or template Linda Park prefers for vendor ROI presentations?",
+        "Do you have a timeline for when you\u2019d want to go to Linda \u2014 before or after we meet with Maria Santos?"
+      ]
+    },
+    {
+      "id": "q-eh-015",
+      "category": "Renewal Readiness",
+      "text": "Are you evaluating any competing solutions, or is this primarily a renewal decision?",
+      "asked": true,
+      "answer": "Not actively evaluating alternatives. But James said if they can\u2019t justify the spend, they\u2019d consider building something lightweight in-house using Teams and Power BI. Low probability but real \u2014 their IT team has done internal builds before.",
+      "follow_ups": [
+        "Has the internal build option been scoped at all, or is it theoretical?",
+        "What would the internal build lack compared to what they have today?"
+      ]
+    },
+    {
+      "id": "q-eh-016",
+      "category": "Renewal Readiness",
+      "text": "What\u2019s the biggest risk you see to renewing?",
+      "asked": true,
+      "answer": "Getting CFO buy-in without a clear ROI story. James said Linda Park is skeptical of SaaS spending he can\u2019t quantify. He specifically needs readmission rate impact data tied to platform usage before he\u2019d feel comfortable going to her.",
+      "follow_ups": [
+        "Is there a deadline for when you\u2019d need the ROI data to make the June 1 timeline work?",
+        "Would Linda Park want to meet directly with our team, or does James prefer to present solo?"
+      ]
+    },
+    {
+      "id": "q-eh-017",
+      "category": "Stakeholder Changes",
+      "text": "Dr. Kim was your champion \u2014 who\u2019s filled that role internally since she left?",
+      "asked": true,
+      "answer": "No one officially. James has inherited the vendor relationship but he wasn\u2019t the original buyer. He\u2019s trying to get up to speed but doesn\u2019t have clinical context. There\u2019s a gap between IT and clinical leadership right now.",
+      "follow_ups": [
+        "Does James have a relationship with the new CMO (Dr. Walsh)?",
+        "Is there anyone on the clinical side who has been advocating informally?"
+      ]
+    },
+    {
+      "id": "q-eh-018",
+      "category": "Stakeholder Changes",
+      "text": "Is there a clinical champion we should try to identify and engage \u2014 a nursing director or medical director?",
+      "asked": true,
+      "answer": "James suggested Director of Care Coordination, Maria Santos. She\u2019s at Evergreen Main (one of the high-adoption sites) and has been informally advocating for the tool. James offered to make an intro if we want to connect with her.",
+      "follow_ups": [
+        "What\u2019s Maria\u2019s level of influence with clinical leadership?",
+        "Would she be willing to present at an internal leadership meeting on the platform\u2019s impact?"
+      ]
+    },
+    {
+      "id": "q-eh-019",
+      "category": "Stakeholder Changes",
+      "text": "How has the leadership change affected IT\u2019s priorities \u2014 is care coordination still a strategic priority?",
+      "asked": true,
+      "answer": "It\u2019s dropped a tier. The new CMO (Dr. Robert Walsh) is focused on the Epic optimization roadmap and hasn\u2019t engaged with our product at all. IT is stretched thin and there\u2019s no clinical executive pushing this forward.",
+      "follow_ups": [
+        "Is Dr. Walsh\u2019s Epic focus a short-term initiative or a multi-year program?",
+        "Would positioning our platform as complementary to Epic (not competitive) land better with him?"
+      ]
+    },
+    {
+      "id": "q-eh-020",
+      "category": "Stakeholder Changes",
+      "text": "Who else should we be building a relationship with to make sure this renewal goes smoothly?",
+      "asked": true,
+      "answer": "James suggested reconnecting with Maria Santos and scheduling a brief with Dr. Walsh to reintroduce the product. He\u2019d support setting up both meetings. Also mentioned that Linda Park (CFO) will want to be briefed at some point before the June 1 date.",
+      "follow_ups": [
+        "What\u2019s the best way to request a meeting with Dr. Walsh \u2014 through James, or directly?",
+        "Is there a preferred timing for the CFO conversation relative to the renewal date?"
+      ]
+    }
+  ],
+  "summary": {
+    "key_findings": [
+      "Original champion Dr. Sarah Kim departed in January, leaving no internal owner \u2014 renewal risk is primarily a relationship and change management problem, not product dissatisfaction",
+      "Usage dropped 40% since Q3, concentrated at 6 of 8 hospitals; Evergreen Main and Eastside are strong adopters with nurse champions driving daily engagement",
+      "CFO sign-off is required for renewal ($380K ARR exceeds IT Director\u2019s $200K authority) \u2014 business case must be quantified with Evergreen-specific readmission rate data",
+      "IT Director James Tran is evaluating the product fresh without emotional investment in the original purchase decision \u2014 the original success metrics feel like someone else\u2019s goals",
+      "Director of Care Coordination Maria Santos (Evergreen Main) is an informal champion and the strongest path to rebuilding internal clinical advocacy"
+    ],
+    "technical_requirements": [
+      "Epic bi-directional sync needs to be enabled at remaining 7 hospitals (currently active at only 1 of 8)",
+      "Mobile app update must be pushed to older hospital iPads \u2014 IT owns this and it\u2019s blocking care coordinator adoption at multiple sites",
+      "Analytics dashboard walkthrough needed for James and Maria \u2014 readmission rate reporting is the specific output required for the CFO ROI story",
+      "Teams integration or surfacing mechanism should be explored to reduce context-switching friction cited as the primary reason for non-use",
+      "Potential integration planning for Q4 2026 clinic network acquisition if it proceeds"
+    ],
+    "risks_and_concerns": [
+      "No executive clinical champion \u2014 new CMO Dr. Walsh is focused on Epic roadmap and has not engaged with the platform; without clinical executive sponsorship, renewal is vulnerable to deprioritization",
+      "CFO Linda Park is skeptical of unquantified SaaS spend \u2014 without specific readmission rate impact data, the $380K renewal will stall at her desk",
+      "Build-internally alternative (Teams + Power BI) is the stated fallback if ROI cannot be demonstrated \u2014 low probability but credible given IT\u2019s build history",
+      "No formal clinical onboarding process means adoption decay will continue as staff turnover occurs \u2014 structural problem that needs a joint solution",
+      "IT stretched thin with no bandwidth to drive platform rollout at 6 lagging hospitals without CSM-led structured support"
+    ],
+    "recommended_next_steps": [
+      "Pull readmission rate impact analysis this week and deliver a ready-to-present one-pager to James by end of month \u2014 this is the unlock for the CFO conversation",
+      "Book a three-way intro call: CSM + James + Maria Santos to establish Maria as the new clinical champion and co-create a 90-day adoption plan",
+      "Request a 30-minute executive briefing with Dr. Walsh (new CMO) through James \u2014 position as a quarterly partnership review, not a sales call; frame around Epic complementarity",
+      "Identify a peer reference customer in a similar health system who renewed and improved adoption \u2014 arrange a reference call for James before he goes to Linda Park",
+      "Build and deliver a 90-day adoption recovery plan: Epic sync enablement at 7 remaining hospitals, iPad update coordination with IT, and nurse champion playbook for the 6 lagging sites"
+    ],
+    "raw_text": "Evergreen Health Systems is approaching renewal at $380K ARR in a materially different position than when they originally purchased. The January departure of Dr. Sarah Kim \u2014 the original executive champion \u2014 has created an ownership vacuum that is the root cause of every risk signal we\u2019re seeing: usage decline, lack of internal advocacy, and a CFO who has never heard a compelling story about this investment.\n\nJames Tran is a reasonable counterpart who wants to renew if we can make it easy for him to do so. He has been direct about exactly what he needs: a quantified ROI story tied to readmission rates, a credible adoption recovery plan for the 6 lagging hospitals, and a peer reference call. These are achievable in the next 30\u201345 days if we move with urgency.\n\nThe product itself is not the problem. The two hospitals with engaged nurse champions \u2014 Evergreen Main and Eastside \u2014 are strong daily users. This validates the product and gives us a compelling internal case study. Maria Santos at Evergreen Main is an untapped asset who has been informally advocating for the platform; she should become our primary clinical champion immediately and be central to the adoption recovery plan.\n\nThe path to a successful renewal has three lanes running in parallel: (1) deliver the CFO-ready readmission impact data story within two weeks, (2) establish Maria Santos as the new internal champion with a joint 90-day adoption plan, and (3) secure a brief introductory meeting with the new CMO Dr. Walsh before the June 1 deadline. Executing on all three converts a churn risk into a stable renewal and positions us well for the potential clinic network expansion in Q4 2026."
+  },
+  "created_at": "2026-02-10T09:15:00+00:00",
+  "updated_at": "2026-03-28T16:30:00+00:00"
+}

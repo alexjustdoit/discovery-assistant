@@ -28,6 +28,7 @@ POST_SALES_CATEGORIES = [
 ]
 
 QUESTIONS_PER_CATEGORY = 4
+REFRESH_QUESTIONS_PER_CATEGORY = 2
 
 
 class _GeneratedQuestion(BaseModel):
@@ -56,10 +57,14 @@ def _build_system(mode: DiscoveryMode) -> str:
     )
 
 
-def _build_user(context: SessionContext, mode: DiscoveryMode) -> str:
+def _build_user(context: SessionContext, mode: DiscoveryMode, per_category: int, existing_texts: list[str] | None = None) -> str:
     categories = PRE_SALES_CATEGORIES if mode == DiscoveryMode.PRE_SALES else POST_SALES_CATEGORIES
+    existing_block = ""
+    if existing_texts:
+        formatted = "\n".join(f"- {t}" for t in existing_texts)
+        existing_block = f"\nDo not duplicate or closely restate any of these existing questions:\n{formatted}\n"
     return f"""
-Generate exactly {QUESTIONS_PER_CATEGORY} discovery questions for each of these categories:
+Generate exactly {per_category} discovery questions for each of these categories:
 {", ".join(categories)}
 
 Customer/Prospect context:
@@ -69,25 +74,41 @@ Customer/Prospect context:
 - Tech stack: {context.tech_stack}
 - Stage: {context.stage}
 {f"- Additional context: {context.notes}" if context.notes else ""}
-
+{existing_block}
 For each question, also provide 1-2 follow-up probes (shorter questions to dig deeper if the answer is vague).
 Return all questions across all categories.
 """.strip()
 
 
 def generate_questions(session: Session) -> list[Question]:
-    """Generate questions for the session and return them (does not mutate session)."""
+    """Generate the initial question bank for a session (does not mutate session)."""
     provider = router.get_provider(quality_required=False)
     system = _build_system(session.mode)
-    user = _build_user(session.context, session.mode)
+    user = _build_user(session.context, session.mode, per_category=QUESTIONS_PER_CATEGORY)
 
     bank, _ = provider.complete_structured(system, user, _QuestionBank)
 
     return [
-        Question(
-            category=q.category,
-            text=q.text,
-            follow_ups=q.follow_ups,
-        )
+        Question(category=q.category, text=q.text, follow_ups=q.follow_ups)
+        for q in bank.questions
+    ]
+
+
+def generate_additional_questions(session: Session) -> list[Question]:
+    """Generate supplementary questions that avoid duplicating existing ones (does not mutate session)."""
+    provider = router.get_provider(quality_required=False)
+    system = _build_system(session.mode)
+    existing_texts = [q.text for q in session.questions]
+    user = _build_user(
+        session.context,
+        session.mode,
+        per_category=REFRESH_QUESTIONS_PER_CATEGORY,
+        existing_texts=existing_texts,
+    )
+
+    bank, _ = provider.complete_structured(system, user, _QuestionBank)
+
+    return [
+        Question(category=q.category, text=q.text, follow_ups=q.follow_ups)
         for q in bank.questions
     ]
