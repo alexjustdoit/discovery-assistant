@@ -54,7 +54,7 @@ pip install -r requirements.txt
 streamlit run app/streamlit_app.py
 ```
 
-Then open `http://localhost:8501` in your browser.
+Then open `http://localhost:8502` in your browser.
 
 > In new terminal sessions, always activate the venv first: `venv\Scripts\activate`
 
@@ -70,7 +70,7 @@ pip install -r requirements.txt
 streamlit run app/streamlit_app.py
 ```
 
-Then open `http://localhost:8501` in your browser.
+Then open `http://localhost:8502` in your browser.
 
 > In new terminal sessions, always activate the venv first: `source venv/bin/activate`
 
@@ -85,7 +85,7 @@ streamlit run app/streamlit_app.py --server.address 0.0.0.0
 Find your WSL2 IP and open it in your Windows browser:
 
 ```bash
-hostname -I | awk '{print $1}'   # open http://<this-ip>:8501
+hostname -I | awk '{print $1}'   # open http://<this-ip>:8502
 ```
 
 ## Environment Variables
