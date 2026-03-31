@@ -10,9 +10,13 @@ DEMO_SESSION_IDS = {
 
 st.markdown("## Discovery Assistant")
 st.markdown(
-    "Customer engagement intelligence for SAs and TAMs. "
-    "Input customer context, get a tailored discovery playbook, capture notes during the call, "
-    "log touchpoints, and synthesize a shareable summary and follow-up email — in one workflow."
+    "The work that drives deal outcomes and customer health — discovery questions, call notes, "
+    "stakeholder maps, follow-up summaries — usually lives across browser tabs, scattered docs, and memory. "
+    "Discovery Assistant keeps it in one place, structured around the actual SA and TAM workflow."
+)
+st.markdown(
+    "Start an engagement, get a tailored discovery playbook, work through it on the call, "
+    "log touchpoints over the relationship, and generate a shareable summary and follow-up email when you're ready."
 )
 
 st.divider()
