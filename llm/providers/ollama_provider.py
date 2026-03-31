@@ -54,6 +54,35 @@ class OllamaProvider(LLMProvider):
             estimated_cost_usd=0.0,
         )
 
+    @staticmethod
+    def _schema_to_example(schema: Type[BaseModel]) -> str:
+        """Build a simple example JSON from a Pydantic model.
+
+        Avoids dumping the raw $defs/$ref schema, which causes local models
+        to echo the schema definition back instead of returning actual data.
+        """
+        raw = schema.model_json_schema()
+        defs = raw.get("$defs", {})
+
+        def resolve(s: dict) -> object:
+            if "$ref" in s:
+                name = s["$ref"].split("/")[-1]
+                return resolve(defs.get(name, {}))
+            t = s.get("type")
+            if t == "string":
+                return "..."
+            if t == "boolean":
+                return True
+            if t == "integer":
+                return 0
+            if t == "array":
+                return [resolve(s.get("items", {}))]
+            if t == "object" or "properties" in s:
+                return {k: resolve(v) for k, v in s.get("properties", {}).items()}
+            return "..."
+
+        return json.dumps(resolve(raw), indent=2)
+
     def complete_structured(
         self,
         system: str,
@@ -61,12 +90,12 @@ class OllamaProvider(LLMProvider):
         schema: Type[BaseModel],
         temperature: float = 0.1,
     ) -> tuple[BaseModel, LLMResponse]:
-        schema_json = json.dumps(schema.model_json_schema(), indent=2)
+        example = self._schema_to_example(schema)
         structured_system = (
             f"{system}\n\n"
-            f"You MUST respond with valid JSON that exactly matches this schema:\n"
-            f"{schema_json}\n\n"
-            "Respond with only the JSON object, no markdown, no explanation."
+            f"Respond with a JSON object in exactly this format:\n"
+            f"{example}\n\n"
+            "Return only the JSON object with real values — no markdown, no explanation."
         )
         messages = [
             {"role": "system", "content": structured_system},

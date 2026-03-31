@@ -98,7 +98,8 @@ def generate_additional_questions(session: Session) -> list[Question]:
     """Generate supplementary questions that avoid duplicating existing ones (does not mutate session)."""
     provider = router.get_provider(quality_required=False)
     system = _build_system(session.mode)
-    existing_texts = [q.text for q in session.questions]
+    # Cap to avoid overwhelming local models with very long prompts
+    existing_texts = [q.text for q in session.questions][:12]
     user = _build_user(
         session.context,
         session.mode,
