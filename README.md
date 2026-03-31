@@ -1,120 +1,97 @@
 # Discovery Assistant
 
-Customer engagement intelligence for SAs and TAMs.
+AI-powered customer engagement tool for Solutions Architects and Technical Account Managers.
 
-Paste in context about a customer or prospect, get a tailored discovery playbook, capture notes during the call, log touchpoints, and generate a shareable summary and follow-up email — all in one place.
+Paste in customer context, get a tailored discovery playbook, work through it on the call, log touchpoints, and generate a shareable summary and follow-up email — in one workflow.
 
-## Features
+**[Try the live demo →](https://discovery-assistant.streamlit.app)**
 
-- **Pre-sales mode (SA):** Technical fit, integrations & architecture, security & compliance, stakeholder mapping, POC scoping, competitive
-- **Post-sales mode (TAM):** Expansion signals, health & risk, adoption gaps, renewal readiness, stakeholder changes
-- **AI question generation** — context-aware, categorized, with follow-up probes
-- **Session editing** — update context mid-session, add custom questions per-category, refresh with additional AI questions (never overwrites answered questions)
-- **Meeting log** — log touchpoints (date, attendees, notes) against a session; full timeline view newest-first
-- **Discovery summary** — AI-synthesized key findings, technical requirements, risks, and next steps; fully editable before sharing
-- **Follow-up email draft** — generates a ready-to-send post-call email from the summary; editable and persistent
-- **Markdown export** — full summary + Q&A notes
-- **Demo sessions** — two pre-loaded realistic sessions (Meridian Financial SA, Evergreen Health TAM) with meeting logs ready to explore on first launch
-- **Session persistence** — sessions saved as JSON; browse, open, and delete from the Home page
+---
+
+## Why I built this
+
+I've spent time as a TAM and observed a consistent friction point: the work that actually drives deal outcomes and customer health — discovery questions, call notes, stakeholder maps, follow-up summaries — lives across browser tabs, scattered Notion docs, and memory. CRM captures what happened after the fact. Nothing structures the conversation before and during it.
+
+This is a portfolio project targeting Solutions Architect and pre-sales engineering roles. It's meant to demonstrate both domain fluency (what SA and TAM workflows actually look like) and technical depth (how to build a usable AI-powered tool around them).
+
+Two demo engagements are pre-loaded to show the full workflow without any setup: a pre-sales SA discovery in progress (Meridian Financial), and a post-sales TAM renewal at-risk recovery with a completed summary (Evergreen Health Systems).
+
+---
+
+## Workflow
+
+**1. New Engagement** — input customer context (company, industry, use case, tech stack, stage, notes). The LLM generates a categorized question bank tailored to that specific context and mode.
+
+**2. Discovery Playbook** — work through questions during the call. Check off what's been asked, capture notes inline, promote AI-suggested follow-up probes directly into the bank. Edit or delete questions. Refresh with additional AI questions without touching answered ones. Edit context mid-engagement and choose to regenerate unanswered questions or append net-new ones.
+
+**3. Touchpoint Log** — log meetings, calls, and QBRs with date, attendees, and notes. Full timeline sorted newest-first.
+
+**4. Discovery Summary** — after the call, generate an AI-synthesized summary: key findings, technical requirements, risks, and recommended next steps. Edit any section inline before sharing. Export as markdown.
+
+**5. Follow-up Email** — draft a ready-to-send post-call email from the summary. Editable, persistent, auto-cleared if the summary is edited.
+
+---
+
+## Architecture & design decisions
+
+**LLM routing**
+Two providers, routed by a `quality_required` flag. Question generation uses GPT-5.4-nano (high volume, structured output, cost-sensitive). Summaries and email drafts use Claude Haiku (higher quality, lower frequency). A local Ollama path (`USE_LOCAL_LLM=true`) runs everything through llama3.1:8b for zero API cost during development.
+
+**Structured output with Ollama**
+Local models struggle with Pydantic's raw JSON schema (`$defs`/`$ref` format) — llama3.1:8b would echo the schema definition back instead of returning data. The fix: a `_schema_to_example()` method that walks the schema and produces a clean example JSON object (`{"questions": [{"category": "...", "text": "...", "follow_ups": ["..."]}]}`). This is injected into the system prompt as a concrete format example rather than an abstract schema.
+
+**Data model**
+Single `Session` object is the source of truth for everything — context, questions, meetings, summary, email draft. Persisted as JSON via Pydantic's model serialization. No database; file-based storage keeps the local dev experience zero-config and makes the data inspectable. The `Session` model handles backward compatibility for fields added over time (all new fields have defaults).
+
+**Streamlit patterns**
+- `st.session_state` carries `active_session_id` across page navigation so the engagement selector pre-selects correctly on every page
+- `on_change` callbacks on question checkboxes and note textareas clear the "new question" highlight set on first interaction without a full rerun cycle
+- `st.components.v1.html` with `window.parent.document.getElementById` triggers smooth scroll to newly promoted follow-up questions across the iframe boundary
+- Inline question editing uses a session_state set (`editing_question_ids`) to toggle between view and edit mode within the same render pass
+
+**Testing**
+45 tests, all LLM calls mocked via `unittest.mock.patch`. Tests cover model behavior, JSON serialization roundtrips, session persistence, question generation logic, summary generation, and email generation. The goal is testing behavior (what the function returns given input) rather than implementation (how it calls the LLM).
+
+---
 
 ## Stack
 
-Python · Streamlit · Pydantic · OpenAI GPT-5.4-nano · Claude Haiku 4.5 · Ollama (local)
+Python · Streamlit · Pydantic v2 · OpenAI GPT-5.4-nano · Anthropic Claude Haiku 4.5 · Ollama
 
-LLM routing: `USE_LOCAL_LLM=true` → Ollama (free/local) · `false` → GPT-5.4-nano for questions, Claude Haiku for summaries and email drafts
+---
 
-## Deploy to Streamlit Cloud
+## Setup
 
-1. Fork this repo
-2. Go to [share.streamlit.io](https://share.streamlit.io) → New app
-3. Set **Main file path:** `app/streamlit_app.py`
-4. Open **Advanced settings → Secrets** and paste:
-
-```toml
-USE_LOCAL_LLM = "false"
-OPENAI_API_KEY = "sk-..."
-ANTHROPIC_API_KEY = "sk-ant-..."
-```
-
-5. Deploy — demo sessions load automatically on first run
-
-> Sessions are stored on Streamlit Cloud's ephemeral filesystem and reset on each restart. For a portfolio demo this is fine — the demo sessions always re-seed.
-
-## Local Setup
-
-### Windows (native)
-
-```powershell
-git clone https://github.com/alexjustdoit/discovery-assistant.git
-cd discovery-assistant
-copy .env.example .env        # fill in your API keys
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-streamlit run app/streamlit_app.py
-```
-
-Then open `http://localhost:8502` in your browser.
-
-> In new terminal sessions, always activate the venv first: `venv\Scripts\activate`
-
-### Mac / Linux
+Requires Python 3.10+.
 
 ```bash
 git clone https://github.com/alexjustdoit/discovery-assistant.git
 cd discovery-assistant
-cp .env.example .env          # fill in your API keys
-python3 -m venv venv
-source venv/bin/activate
+cp .env.example .env    # add API keys
+python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 streamlit run app/streamlit_app.py
 ```
 
-Then open `http://localhost:8502` in your browser.
+Open `http://localhost:8502`. Two demo engagements load automatically.
 
-> In new terminal sessions, always activate the venv first: `source venv/bin/activate`
+**Windows:** replace `cp` with `copy` and `source venv/bin/activate` with `venv\Scripts\activate`.
 
-### WSL2 (Windows Subsystem for Linux)
-
-Same as Mac/Linux above, but run Streamlit bound to all interfaces so the Windows browser can reach it:
-
-```bash
-streamlit run app/streamlit_app.py --server.address 0.0.0.0
-```
-
-Find your WSL2 IP and open it in your Windows browser:
-
-```bash
-hostname -I | awk '{print $1}'   # open http://<this-ip>:8502
-```
-
-## Environment Variables
-
-Copy `.env.example` to `.env` and configure:
+**Environment variables** (in `.env`):
 
 ```
-USE_LOCAL_LLM=true          # true = Ollama (free/local), false = OpenAI + Claude API
+USE_LOCAL_LLM=true          # true = Ollama (free), false = OpenAI + Claude API
+OPENAI_API_KEY=             # required if USE_LOCAL_LLM=false
+ANTHROPIC_API_KEY=          # optional — enables Claude Haiku for summaries/email
 OLLAMA_BASE_URL=http://localhost:11434
-OPENAI_API_KEY=
-ANTHROPIC_API_KEY=
 ```
 
-When `USE_LOCAL_LLM=false`, `OPENAI_API_KEY` is required. `ANTHROPIC_API_KEY` is optional — if set, summaries and email drafts use Claude Haiku; otherwise falls back to OpenAI.
+**Streamlit Cloud:** fork the repo, set main file to `app/streamlit_app.py`, and add keys under Settings → Secrets.
 
-## Running Tests
+---
+
+## Tests
 
 ```bash
 pytest tests/ -v
 ```
-
-45 tests covering models, session persistence, question generation, summary generation, and email generation (all LLM calls mocked).
-
-## Pages
-
-| Page | Description |
-|---|---|
-| Home | Browse and manage all engagements; demo engagement cards; New Engagement CTA |
-| New Engagement | Input customer context and generate the initial discovery playbook |
-| Discovery Playbook | Work through questions, capture notes, add custom questions, refresh with AI |
-| Touchpoint Log | Log and browse touchpoints (date, attendees, notes) for an engagement |
-| Discovery Summary | AI-generated debrief, inline editing, follow-up email draft, markdown export |
