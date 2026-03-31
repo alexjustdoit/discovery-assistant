@@ -3,6 +3,7 @@ from datetime import date
 import streamlit as st
 
 import config  # noqa: F401
+from app.components.engagement_nav import render_engagement_nav
 from data.models import Meeting
 from data.store import list_sessions, load_session, save_session
 
@@ -29,6 +30,8 @@ selected_label = st.selectbox("Engagement", options=list(session_options.keys())
 session_id = session_options[selected_label]
 session = load_session(session_id)
 st.session_state["active_session_id"] = session_id
+
+render_engagement_nav("touchpoint_log")
 
 meeting_count = len(session.meetings)
 st.caption(f"{session.context.company} · {session.context.stage} · {meeting_count} touchpoint{'s' if meeting_count != 1 else ''} logged")

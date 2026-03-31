@@ -1,6 +1,7 @@
 import streamlit as st
 
 import config  # noqa: F401
+from app.components.engagement_nav import render_engagement_nav
 from data.store import list_sessions, load_session, save_session
 from features.email_generation import generate_followup_email
 from features.summary_generation import generate_summary
@@ -63,6 +64,8 @@ selected_label = st.selectbox("Engagement", options=list(session_options.keys())
 session_id = session_options[selected_label]
 session = load_session(session_id)
 st.session_state["active_session_id"] = session_id
+
+render_engagement_nav("summary")
 
 answered = session.answered_questions()
 if not answered:

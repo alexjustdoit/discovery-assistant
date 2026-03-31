@@ -2,6 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 import config  # noqa: F401
+from app.components.engagement_nav import render_engagement_nav
 from data.models import Question
 from data.store import list_sessions, load_session, save_session
 from features.question_generation import (
@@ -39,6 +40,8 @@ if st.session_state.get("_qb_session_id") != session_id:
 
 session = load_session(session_id)
 st.session_state["active_session_id"] = session_id
+
+render_engagement_nav("playbook")
 
 new_ids: set[str] = st.session_state.setdefault("new_question_ids", set())
 editing_ids: set[str] = st.session_state.setdefault("editing_question_ids", set())
