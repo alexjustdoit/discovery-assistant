@@ -34,7 +34,7 @@ REFRESH_QUESTIONS_PER_CATEGORY = 2
 class _GeneratedQuestion(BaseModel):
     category: str
     text: str
-    follow_ups: list[str]
+    follow_ups: list[str] = []
 
 
 class _QuestionBank(BaseModel):

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 from typing import Type
 
@@ -74,9 +75,16 @@ class OllamaProvider(LLMProvider):
         content, latency_ms = self._chat(messages, temperature)
 
         clean = content.strip()
-        if clean.startswith("```"):
-            lines = clean.split("\n")
-            clean = "\n".join(lines[1:-1]) if len(lines) > 2 else clean
+
+        # Extract from markdown code fences if present
+        fence_match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", clean)
+        if fence_match:
+            clean = fence_match.group(1).strip()
+        else:
+            # Find the outermost JSON object in case the model added prose around it
+            obj_match = re.search(r"\{[\s\S]*\}", clean)
+            if obj_match:
+                clean = obj_match.group()
 
         parsed = schema.model_validate_json(clean)
         resp = LLMResponse(
