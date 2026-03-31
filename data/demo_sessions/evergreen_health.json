@@ -231,6 +231,29 @@
       ]
     }
   ],
+  "meetings": [
+    {
+      "id": "m-eh-001",
+      "date": "2026-02-10",
+      "title": "Renewal Kickoff \u2014 Introduction to James Tran",
+      "attendees": "James Tran (IT Director), CSM, You (TAM)",
+      "notes": "First call since Dr. Kim's departure. James was briefed on the product but wasn't part of the original purchase and has no emotional investment in the original goals. Tone was neutral-to-cautious.\n\nHe flagged the 40% usage drop immediately and already understood the cause \u2014 Dr. Kim ran weekly training sessions and no one stepped in. He framed it as an internal failure, not a product problem. That's a good sign.\n\nHis ask was direct: he needs a ROI report with Evergreen-specific data before he'll take the renewal to his CFO (Linda Park). At $380K he's above his $200K authority threshold, so this conversation with Linda is unavoidable. He wants to go into it prepared.\n\nRenewal date is June 1. Roughly 16 weeks to build a value story and close."
+    },
+    {
+      "id": "m-eh-002",
+      "date": "2026-03-05",
+      "title": "QBR \u2014 IT Leadership",
+      "attendees": "James Tran, Rachel Kim (IT Manager), CSM, You (TAM)",
+      "notes": "Broader IT team review. Rachel manages day-to-day vendor relationships and came in more skeptical than James \u2014 she asked pointed questions about what adoption support we'd provide for the 6 lagging hospitals and whether SLA commitments were being met.\n\nBig moment: I showed the analytics dashboard, which James had never seen before. Rachel immediately asked if they could pull a custom report on readmission rates tied to platform usage. That's exactly the CFO ROI hook we need to build.\n\nAction items coming out of this call:\n- Pull readmission rate data analysis from our platform and prepare a one-pager before end of March\n- Get IT the updated iPad app version for the lagging hospitals (blocked on their IT push schedule)\n- Identify if there's a clinical champion we can engage \u2014 James hinted at someone in care coordination at Evergreen Main"
+    },
+    {
+      "id": "m-eh-003",
+      "date": "2026-03-28",
+      "title": "Discovery Deep-Dive \u2014 James + Maria Santos",
+      "attendees": "James Tran (IT Director), Maria Santos (Director of Care Coordination, Evergreen Main), You (TAM)",
+      "notes": "Best call of the renewal cycle. Maria is exactly the internal champion we needed. She's been using the platform daily at Evergreen Main, has strong opinions, and is clearly respected by James.\n\nMaria confirmed the two-hospital adoption split and gave specific color: the difference was nurse champions during rollout at Main and Eastside, nothing equivalent at the other 6. She volunteered to lead a training program for the lagging hospitals if we provide materials and a structured rollout plan.\n\nJames's demeanor shifted noticeably with Maria in the room. He agreed to facilitate introductions to Dr. Walsh (new CMO) and Linda Park (CFO) once we have the readmission ROI one-pager ready. He specifically said: \u201cIf you can show Linda the numbers, I'll set up the meeting.\u201d\n\nThis is the call where the renewal moved from at-risk to recoverable. Maria Santos is now the internal champion. Next step: three-way working session to build the 90-day adoption plan for the 6 lagging hospitals."
+    }
+  ],
   "summary": {
     "key_findings": [
       "Original champion Dr. Sarah Kim departed in January, leaving no internal owner \u2014 renewal risk is primarily a relationship and change management problem, not product dissatisfaction",

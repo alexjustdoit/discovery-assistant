@@ -1,11 +1,12 @@
 """Tests for data models and session persistence."""
 import json
 import tempfile
+from datetime import date
 from pathlib import Path
 
 import pytest
 
-from data.models import DiscoveryMode, Question, Session, SessionContext
+from data.models import DiscoveryMode, Meeting, Question, Session, SessionContext
 
 
 def make_session(mode=DiscoveryMode.PRE_SALES) -> Session:
@@ -102,3 +103,53 @@ def test_session_email_draft_none_roundtrip():
     data.pop("email_draft", None)  # simulate old session file without the field
     restored = Session.model_validate_json(json.dumps(data))
     assert restored.email_draft is None
+
+
+# ── Meeting model ─────────────────────────────────────────────────────────────
+
+def test_meeting_creation():
+    m = Meeting(date=date(2026, 3, 28), title="Intro Discovery Call")
+    assert m.id
+    assert m.attendees == ""
+    assert m.notes == ""
+
+
+def test_meeting_roundtrip():
+    m = Meeting(
+        date=date(2026, 3, 28),
+        title="Technical Deep-Dive",
+        attendees="Marcus Chen, You (SA)",
+        notes="Walked through Oracle pipeline.",
+    )
+    data = json.loads(m.model_dump_json())
+    restored = Meeting.model_validate(data)
+    assert restored.date == m.date
+    assert restored.title == m.title
+    assert restored.attendees == m.attendees
+    assert restored.notes == m.notes
+
+
+def test_session_meetings_default_empty():
+    session = make_session()
+    assert session.meetings == []
+
+
+def test_session_with_meetings_roundtrip():
+    session = make_session()
+    session.meetings = [
+        Meeting(date=date(2026, 3, 15), title="Intro Call", notes="First call notes."),
+        Meeting(date=date(2026, 3, 22), title="Technical Deep-Dive", attendees="Priya Shah"),
+    ]
+    restored = Session.model_validate_json(session.model_dump_json())
+    assert len(restored.meetings) == 2
+    assert restored.meetings[0].title == "Intro Call"
+    assert restored.meetings[1].attendees == "Priya Shah"
+
+
+def test_session_without_meetings_field_loads_cleanly():
+    """Old session JSON files without meetings field should load with empty list."""
+    session = make_session()
+    data = json.loads(session.model_dump_json())
+    data.pop("meetings", None)
+    restored = Session.model_validate_json(json.dumps(data))
+    assert restored.meetings == []

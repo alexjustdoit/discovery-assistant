@@ -10,10 +10,11 @@ Paste in context about a customer or prospect, get a tailored question bank, cap
 - **Post-sales mode (TAM):** Expansion signals, health & risk, adoption gaps, renewal readiness, stakeholder changes
 - **AI question generation** — context-aware, categorized, with follow-up probes
 - **Session editing** — update context mid-session, add custom questions per-category, refresh with additional AI questions (never overwrites answered questions)
+- **Meeting log** — log touchpoints (date, attendees, notes) against a session; full timeline view newest-first
 - **Discovery summary** — AI-synthesized key findings, technical requirements, risks, and next steps; fully editable before sharing
 - **Follow-up email draft** — generates a ready-to-send post-call email from the summary; editable and persistent
 - **Markdown export** — full summary + Q&A notes
-- **Demo sessions** — two pre-loaded realistic sessions (Meridian Financial SA, Evergreen Health TAM) ready to explore on first launch
+- **Demo sessions** — two pre-loaded realistic sessions (Meridian Financial SA, Evergreen Health TAM) with meeting logs ready to explore on first launch
 - **Session persistence** — sessions saved as JSON; browse, resume, or delete from Saved Sessions
 
 ## Stack
@@ -85,7 +86,9 @@ pytest tests/ -v
 
 | Page | Description |
 |---|---|
+| Home | Landing page with demo session cards and quick access to recent sessions |
 | New Session | Input context and generate the initial question bank |
 | Question Bank | Work through questions, capture notes, add custom questions, refresh with AI |
+| Meeting Log | Log and browse meeting touchpoints (date, attendees, notes) for a session |
 | Discovery Summary | AI-generated debrief, inline editing, follow-up email draft, markdown export |
 | Saved Sessions | Browse, resume, and delete past sessions |

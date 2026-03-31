@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from enum import Enum
 from typing import Optional
 
@@ -47,6 +47,14 @@ class SessionContext(BaseModel):
     notes: str = ""  # freeform additional context
 
 
+class Meeting(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    date: date
+    title: str
+    attendees: str = ""
+    notes: str = ""
+
+
 class DiscoverySummary(BaseModel):
     key_findings: list[str]
     technical_requirements: list[str]
@@ -60,6 +68,7 @@ class Session(BaseModel):
     mode: DiscoveryMode
     context: SessionContext
     questions: list[Question] = Field(default_factory=list)
+    meetings: list[Meeting] = Field(default_factory=list)
     summary: Optional[DiscoverySummary] = None
     email_draft: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

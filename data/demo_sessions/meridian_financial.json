@@ -275,6 +275,22 @@
       ]
     }
   ],
+  "meetings": [
+    {
+      "id": "m-mf-001",
+      "date": "2026-03-15",
+      "title": "Intro Discovery Call",
+      "attendees": "Marcus Chen (VP Data Engineering), Jordan Webb (AE), You (SA)",
+      "notes": "First call with Meridian. Marcus walked through their current SAS batch process — 4\u20136 hours overnight, risk team gets results by 7am. During volatile market days this is genuinely painful; he said they've missed early warning signals twice this year.\n\nMarcus is the technical champion. CTO (David Park) is aware of the initiative but not engaged yet. Budget cycle closes Q2, so there's pressure to reach a POC decision by end of April.\n\nStrong fit signal: they've already correctly diagnosed that batch SAS is the root problem, not a symptom. Marcus has tooling authority up to $200K; anything above needs CTO sign-off. Real-time in the 15-minute range during trading hours would be transformative."
+    },
+    {
+      "id": "m-mf-002",
+      "date": "2026-03-22",
+      "title": "Technical Architecture Deep-Dive",
+      "attendees": "Marcus Chen, Priya Shah (Senior Data Engineer), You (SA)",
+      "notes": "Priya joined to walk through the pipeline in detail. Bloomberg \u2192 Oracle \u2192 SAS is the critical path — completely batch-oriented with manual handoffs at each step. No existing streaming infrastructure.\n\nKey insight: they evaluated Kafka two years ago and shelved it due to ops overhead. They explicitly want managed/SaaS, not open-source they have to maintain. Strong positive signal for us.\n\nPriya is technically sharp and would be a key voice in any POC evaluation. She asked pointed questions about CDC from Oracle and latency guarantees. Need to prepare a detailed Oracle connector overview before next call.\n\nNext step: schedule POC scoping call with Marcus, Priya, and ideally CTO David Park."
+    }
+  ],
   "summary": null,
   "created_at": "2026-03-15T14:22:00+00:00",
   "updated_at": "2026-03-22T10:45:00+00:00"

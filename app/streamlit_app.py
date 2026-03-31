@@ -31,8 +31,10 @@ st.set_page_config(
 
 pages = st.navigation(
     [
+        st.Page("pages/Home.py", title="Home", icon="🏠"),
         st.Page("pages/New_Session.py", title="New Session", icon="➕"),
         st.Page("pages/Question_Bank.py", title="Question Bank", icon="📋"),
+        st.Page("pages/Meeting_Log.py", title="Meeting Log", icon="🗓️"),
         st.Page("pages/Discovery_Summary.py", title="Discovery Summary", icon="📄"),
         st.Page("pages/Saved_Sessions.py", title="Saved Sessions", icon="💾"),
     ]
