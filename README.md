@@ -40,7 +40,25 @@ ANTHROPIC_API_KEY = "sk-ant-..."
 
 > Sessions are stored on Streamlit Cloud's ephemeral filesystem and reset on each restart. For a portfolio demo this is fine — the demo sessions always re-seed.
 
-## Local Setup (WSL2 / Mac)
+## Local Setup
+
+### Windows (native)
+
+```powershell
+git clone https://github.com/alexjustdoit/discovery-assistant.git
+cd discovery-assistant
+copy .env.example .env        # fill in your API keys
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+streamlit run app/streamlit_app.py
+```
+
+Then open `http://localhost:8501` in your browser.
+
+> In new terminal sessions, always activate the venv first: `venv\Scripts\activate`
+
+### Mac / Linux
 
 ```bash
 git clone https://github.com/alexjustdoit/discovery-assistant.git
@@ -52,14 +70,23 @@ pip install -r requirements.txt
 streamlit run app/streamlit_app.py
 ```
 
-**WSL2 only:** to access from Windows browser, run with `--server.address 0.0.0.0` and find your WSL2 IP:
+Then open `http://localhost:8501` in your browser.
+
+> In new terminal sessions, always activate the venv first: `source venv/bin/activate`
+
+### WSL2 (Windows Subsystem for Linux)
+
+Same as Mac/Linux above, but run Streamlit bound to all interfaces so the Windows browser can reach it:
 
 ```bash
 streamlit run app/streamlit_app.py --server.address 0.0.0.0
-hostname -I | awk '{print $1}'   # open http://<this-ip>:8501 in Windows
 ```
 
-> In new terminal sessions, always activate the venv first: `source venv/bin/activate`
+Find your WSL2 IP and open it in your Windows browser:
+
+```bash
+hostname -I | awk '{print $1}'   # open http://<this-ip>:8501
+```
 
 ## Environment Variables
 
@@ -80,7 +107,7 @@ When `USE_LOCAL_LLM=false`, `OPENAI_API_KEY` is required. `ANTHROPIC_API_KEY` is
 pytest tests/ -v
 ```
 
-21 tests covering models, session persistence, question generation, and summary generation (all LLM calls mocked).
+42 tests covering models, session persistence, question generation, summary generation, and email generation (all LLM calls mocked).
 
 ## Pages
 
