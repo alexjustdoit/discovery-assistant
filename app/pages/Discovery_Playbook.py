@@ -220,7 +220,7 @@ for category, questions in categories.items():
                                 st.session_state["editing_question_ids"] = editing_ids
                                 st.rerun()
                     else:
-                        q_col, edit_col = st.columns([0.93, 0.07])
+                        q_col, edit_col, del_col = st.columns([0.87, 0.07, 0.06])
                         with q_col:
                             st.markdown(f"**{q.text}**")
                         with edit_col:
@@ -228,6 +228,15 @@ for category, questions in categories.items():
                                 editing_ids.add(q.id)
                                 st.session_state["editing_question_ids"] = editing_ids
                                 st.rerun()
+                        with del_col:
+                            with st.popover("🗑", help="Delete question"):
+                                st.caption(f"Delete this question?")
+                                if st.button("Delete", key=f"del_confirm_{q.id}", type="primary"):
+                                    session.questions = [x for x in session.questions if x.id != q.id]
+                                    save_session(session)
+                                    new_ids.discard(q.id)
+                                    editing_ids.discard(q.id)
+                                    st.rerun()
 
                     # ── Follow-ups ────────────────────────────────────────
                     if q.follow_ups:
