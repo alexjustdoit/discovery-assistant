@@ -52,6 +52,9 @@ Single `Session` object is the source of truth for everything — context, quest
 **Testing**
 45 tests, all LLM calls mocked via `unittest.mock.patch`. Tests cover model behavior, JSON serialization roundtrips, session persistence, question generation logic, summary generation, and email generation. The goal is testing behavior (what the function returns given input) rather than implementation (how it calls the LLM).
 
+**On the persistence model**
+I used flat JSON files rather than a database deliberately. For a single-user portfolio tool it keeps setup to `git clone` and `pip install`, the data is directly inspectable, and Pydantic handles all serialization cleanly. The tradeoff I'm making is obvious: no concurrent access, no transactions, no query capability. In a production context I'd swap in SQLite for a single-user local tool or Postgres for multi-user, add proper auth, and move LLM generation to a background job queue so the UI isn't blocked during generation. The architecture is designed so that swap is contained — `data/store.py` is the only layer that touches the filesystem, and nothing else assumes file-based storage.
+
 ---
 
 ## Stack
