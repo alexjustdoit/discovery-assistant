@@ -46,7 +46,7 @@ if submitted:
         )
         session = Session(mode=mode, context=context)
 
-        with st.spinner("Generating discovery questions..."):
+        with st.spinner("Generating discovery questions... stay on this page until complete."):
             try:
                 questions = generate_questions(session)
                 session.questions = questions

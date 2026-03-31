@@ -75,7 +75,7 @@ with st.expander("Edit session context", expanded=False):
 
 # ── Refresh questions ─────────────────────────────────────────────────────────
 if st.button("Refresh Questions", help="Generate additional questions based on the current session context. Existing answered questions are never changed."):
-    with st.spinner("Generating additional questions..."):
+    with st.spinner("Generating additional questions... stay on this page until complete."):
         try:
             new_questions = generate_additional_questions(session)
             session.questions.extend(new_questions)
