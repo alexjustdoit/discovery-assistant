@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
 import config  # noqa: F401
 from data.models import Question
@@ -28,16 +29,25 @@ if active_id:
 selected_label = st.selectbox("Session", options=list(session_options.keys()), index=default_index)
 session_id = session_options[selected_label]
 
-# Reset new-question tracking when switching sessions
+# Reset tracking when switching sessions
 if st.session_state.get("_qb_session_id") != session_id:
     st.session_state["new_question_ids"] = set()
+    st.session_state["editing_question_ids"] = set()
     st.session_state["_qb_session_id"] = session_id
     st.session_state.pop("context_updated_for", None)
+    st.session_state.pop("scroll_to_id", None)
 
 session = load_session(session_id)
 st.session_state["active_session_id"] = session_id
 
-new_ids: set[str] = st.session_state.get("new_question_ids", set())
+new_ids: set[str] = st.session_state.setdefault("new_question_ids", set())
+editing_ids: set[str] = st.session_state.setdefault("editing_question_ids", set())
+
+
+def _unmark_new(q_id: str) -> None:
+    """Remove a question from the new-highlight set on first interaction."""
+    st.session_state.setdefault("new_question_ids", set()).discard(q_id)
+
 
 # ── Sidebar save button ───────────────────────────────────────────────────────
 with st.sidebar:
@@ -80,8 +90,7 @@ with st.expander("Edit session context", expanded=False):
 # ── Post-context-save question update prompt ──────────────────────────────────
 if st.session_state.get("context_updated_for") == session_id:
     unanswered_count = sum(1 for q in session.questions if not q.asked and not q.answer.strip())
-    with st.info("Session context updated.", icon="✅"):
-        pass
+    st.info("Session context updated.", icon="✅")
     if unanswered_count > 0:
         st.markdown(f"**{unanswered_count} unanswered questions** may no longer fit the updated context. What would you like to do?")
         col_a, col_b, col_c = st.columns(3)
@@ -119,7 +128,7 @@ if st.session_state.get("context_updated_for") == session_id:
                 st.session_state.pop("context_updated_for", None)
                 st.rerun()
     else:
-        if st.button("Dismiss", use_container_width=False):
+        if st.button("Dismiss"):
             st.session_state.pop("context_updated_for", None)
             st.rerun()
 
@@ -154,46 +163,87 @@ for category, questions in categories.items():
     with st.expander(cat_label, expanded=not all(q.asked for q in questions)):
         for q in questions:
             is_new = q.id in new_ids
-            wrapper = st.container(border=True) if is_new else st.container()
-            with wrapper:
+            is_editing = q.id in editing_ids
+
+            # Scroll anchor — must be injected before the container so the
+            # iframe scroll script can find it in the parent document DOM.
+            if is_new:
+                st.markdown(f'<div id="q-anchor-{q.id}"></div>', unsafe_allow_html=True)
+
+            with st.container(border=is_new):
                 if is_new:
-                    st.caption("✦ New")
+                    st.markdown(
+                        '<div style="background:#e53e3e;height:3px;border-radius:2px;margin-bottom:6px"></div>',
+                        unsafe_allow_html=True,
+                    )
+                    st.markdown(
+                        '<span style="color:#e53e3e;font-size:0.75rem;font-weight:600">✦ New</span>',
+                        unsafe_allow_html=True,
+                    )
+
                 col1, col2 = st.columns([0.05, 0.95])
                 with col1:
-                    checked = st.checkbox("", value=q.asked, key=f"asked_{q.id}", label_visibility="collapsed")
+                    checked = st.checkbox(
+                        "",
+                        value=q.asked,
+                        key=f"asked_{q.id}",
+                        label_visibility="collapsed",
+                        on_change=_unmark_new,
+                        args=(q.id,),
+                    )
                 with col2:
-                    # Question text + inline edit popover
-                    q_col, edit_col = st.columns([0.93, 0.07])
-                    with q_col:
-                        st.markdown(f"**{q.text}**")
-                    with edit_col:
-                        with st.popover("✏", help="Edit question text"):
-                            edited_text = st.text_area(
-                                "Edit question",
-                                value=q.text,
-                                key=f"edit_text_{q.id}",
-                                height=80,
-                            )
-                            if st.button("Save", key=f"edit_save_{q.id}", type="primary"):
-                                if edited_text.strip() and edited_text.strip() != q.text:
-                                    q.text = edited_text.strip()
+                    # ── Question text / inline edit ───────────────────────
+                    if is_editing:
+                        st.text_area(
+                            "Edit question",
+                            value=q.text,
+                            key=f"edit_text_{q.id}",
+                            height=68,
+                            label_visibility="collapsed",
+                        )
+                        save_col, cancel_col, _ = st.columns([0.12, 0.12, 0.76])
+                        with save_col:
+                            if st.button("Save", key=f"edit_save_{q.id}", type="primary", use_container_width=True):
+                                new_text = st.session_state.get(f"edit_text_{q.id}", "").strip()
+                                if new_text and new_text != q.text:
+                                    q.text = new_text
                                     save_session(session)
-                                    st.rerun()
+                                editing_ids.discard(q.id)
+                                st.session_state["editing_question_ids"] = editing_ids
+                                st.rerun()
+                        with cancel_col:
+                            if st.button("Cancel", key=f"edit_cancel_{q.id}", use_container_width=True):
+                                editing_ids.discard(q.id)
+                                st.session_state["editing_question_ids"] = editing_ids
+                                st.rerun()
+                    else:
+                        q_col, edit_col = st.columns([0.93, 0.07])
+                        with q_col:
+                            st.markdown(f"**{q.text}**")
+                        with edit_col:
+                            if st.button("✏", key=f"edit_btn_{q.id}", help="Edit question"):
+                                editing_ids.add(q.id)
+                                st.session_state["editing_question_ids"] = editing_ids
+                                st.rerun()
 
+                    # ── Follow-ups ────────────────────────────────────────
                     if q.follow_ups:
                         with st.expander("Follow-ups", expanded=False):
-                            for fu in q.follow_ups:
+                            for fu_idx, fu in enumerate(q.follow_ups):
                                 fu_col, add_col = st.columns([0.9, 0.1])
                                 with fu_col:
                                     st.caption(f"→ {fu}")
                                 with add_col:
-                                    if st.button("＋", key=f"promote_{q.id}_{fu[:20]}", help="Add to question bank"):
+                                    if st.button("＋", key=f"promote_{q.id}_{fu_idx}", help="Add to question bank"):
                                         new_q = Question(category=q.category, text=fu)
                                         session.questions.append(new_q)
+                                        q.follow_ups = [f for f in q.follow_ups if f != fu]
                                         save_session(session)
                                         st.session_state["new_question_ids"] = new_ids | {new_q.id}
+                                        st.session_state["scroll_to_id"] = new_q.id
                                         st.rerun()
 
+                    # ── Answer / notes ────────────────────────────────────
                     answer = st.text_area(
                         "Notes / answer",
                         value=q.answer,
@@ -201,6 +251,8 @@ for category, questions in categories.items():
                         height=80,
                         label_visibility="collapsed",
                         placeholder="Notes from the conversation...",
+                        on_change=_unmark_new,
+                        args=(q.id,),
                     )
 
             if checked != q.asked or answer != q.answer:
@@ -235,6 +287,22 @@ if save_clicked:
     if not changed:
         save_session(session)
     st.toast("Notes saved.")
+
+# ── Smooth scroll to promoted follow-up ──────────────────────────────────────
+scroll_to = st.session_state.pop("scroll_to_id", None)
+if scroll_to:
+    components.html(
+        f"""
+        <script>
+        setTimeout(function() {{
+            var el = window.parent.document.getElementById('q-anchor-{scroll_to}');
+            if (el) el.scrollIntoView({{behavior: 'smooth', block: 'center'}});
+        }}, 300);
+        </script>
+        """,
+        height=0,
+        scrolling=False,
+    )
 
 st.divider()
 if st.button("Generate Summary →", type="primary", disabled=len(session.answered_questions()) == 0):
