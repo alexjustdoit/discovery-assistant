@@ -35,6 +35,15 @@ st.session_state["active_session_id"] = session_id
 
 new_ids: set[str] = st.session_state.get("new_question_ids", set())
 
+# ── Sidebar save button ───────────────────────────────────────────────────────
+with st.sidebar:
+    st.divider()
+    save_clicked = st.button(
+        "Save Notes",
+        use_container_width=True,
+        help="Save any pending notes before navigating away",
+    )
+
 asked, total = session.progress()
 st.caption(f"{asked}/{total} questions asked")
 if total > 0:
@@ -144,6 +153,11 @@ for category, questions in categories.items():
 
 if changed:
     save_session(session)
+
+if save_clicked:
+    if not changed:
+        save_session(session)
+    st.toast("Notes saved.")
 
 st.divider()
 if st.button("Generate Summary →", type="primary", disabled=len(session.answered_questions()) == 0):
