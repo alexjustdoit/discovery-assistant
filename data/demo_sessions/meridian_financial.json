@@ -36,8 +36,8 @@
       "id": "q-mf-003",
       "category": "Technical Fit",
       "text": "Where does your portfolio data live today, and how many sources are you pulling from?",
-      "asked": false,
-      "answer": "",
+      "asked": true,
+      "answer": "Primary sources are Bloomberg (market data), an internal position management system, and Oracle as the central warehouse. Priya mentioned a 4th source — a legacy fixed-income pricing engine that's running on a server no one fully understands anymore. Data ownership is fragmented: equities team manages their own feeds, fixed income manages theirs.",
       "follow_ups": [
         "Are any of those sources external data providers or just internal systems?",
         "Is data ownership centralized or does each desk manage its own?"
@@ -69,8 +69,8 @@
       "id": "q-mf-006",
       "category": "Integrations & Architecture",
       "text": "You mentioned Azure is underutilized \u2014 is there a cloud-first mandate or preference, or is hybrid on the table?",
-      "asked": false,
-      "answer": "",
+      "asked": true,
+      "answer": "No formal mandate but Marcus's preference is cloud-first for anything new. The Azure tenant was stood up 18 months ago for a different initiative that stalled. He sees this project as a way to finally justify it. CTO David Park hasn't weighed in on deployment model — Marcus expects him to have opinions once he's engaged.",
       "follow_ups": [
         "Who made the Azure decision and are they still involved in infrastructure decisions?",
         "Is there a timeline or forcing function to increase cloud utilization?"
@@ -80,8 +80,8 @@
       "id": "q-mf-007",
       "category": "Integrations & Architecture",
       "text": "What monitoring or observability do you have over your current pipelines when something breaks?",
-      "asked": false,
-      "answer": "",
+      "asked": true,
+      "answer": "Essentially none. Priya said they find out the SAS job failed when the risk team emails at 7:30am asking where their report is. No alerting, no dashboards. They've talked about adding monitoring but haven't prioritized it. This was said with a laugh but it's clearly a sore point.",
       "follow_ups": [
         "How are incidents reported today \u2014 email, Slack, PagerDuty?",
         "Is there a dedicated platform engineering team or does data engineering own ops too?"
@@ -91,8 +91,8 @@
       "id": "q-mf-008",
       "category": "Integrations & Architecture",
       "text": "Are there any existing CDC or streaming tools in play, even for other use cases?",
-      "asked": false,
-      "answer": "",
+      "asked": true,
+      "answer": "Nothing in production. Priya confirmed they evaluated Kafka about two years ago — got as far as a prototype but shelved it when they couldn't staff the ops overhead. The team doesn't have Kafka expertise and doesn't want to build it. This came up organically and is a strong signal they want managed/SaaS.",
       "follow_ups": [
         "Has Kafka or Flink been evaluated before?",
         "What was the outcome if so?"
@@ -146,8 +146,8 @@
       "id": "q-mf-013",
       "category": "Stakeholder Mapping",
       "text": "Beyond Marcus, who else would be involved in evaluating and approving a new data platform?",
-      "asked": false,
-      "answer": "",
+      "asked": true,
+      "answer": "Marcus said three layers: technical sign-off from Priya and the data engineering team, business sign-off from the Chief Risk Officer (hasn't been in any calls yet), and budget approval from CTO David Park for anything above $200K. There's also a procurement team but Marcus said they're process-oriented, not blockers. The CRO is the unknown — Marcus described her as 'particular about vendors.'",
       "follow_ups": [
         "Is there a formal committee or is it more informal sign-off?",
         "Who has veto power if they\u2019re not convinced?"
@@ -256,8 +256,8 @@
       "id": "q-mf-023",
       "category": "Competitive",
       "text": "Have you looked at open-source streaming solutions like Kafka or Flink?",
-      "asked": false,
-      "answer": "",
+      "asked": true,
+      "answer": "Yes — Kafka two years ago, covered above. Flink was mentioned during that evaluation but never seriously prototyped. Marcus was clear: they don't want to own infrastructure. They've learned that lesson. Priya added that their team of 6 data engineers is already stretched maintaining the current Oracle/SAS stack — adding open-source streaming ops on top isn't realistic.",
       "follow_ups": [
         "Is there appetite to manage open-source infrastructure, or is managed/SaaS preferred?",
         "What\u2019s your team\u2019s experience level with streaming architectures?"
