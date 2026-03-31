@@ -1,5 +1,27 @@
 # Changelog
 
+## [Proposed — v1.0.0]
+
+### Cross-page navigation
+Add contextual nav shortcuts on each working page (Discovery Playbook, Touchpoint Log, Discovery Summary) so users can jump between pages for the active engagement without going through the sidebar or returning to Home.
+
+### Delete a question
+Allow removing a generated question from the playbook. Useful when AI generates something irrelevant to the specific engagement.
+
+### Engagement mode indicator
+Surface the pre-sales / post-sales mode visibly on the playbook and summary pages so context isn't lost once you're inside an engagement.
+
+### Demo data review
+Audit the two demo engagements (Meridian Financial SA, Evergreen Health TAM) to ensure questions, notes, touchpoints, and summaries read like authentic SA/TAM output. First thing any recruiter or hiring manager sees.
+
+### Home page value prop
+Rewrite the hero copy to lead with the problem and workflow, not a feature list. Relevant for portfolio/interview context.
+
+### README rewrite
+Lead with the problem and the thinking behind the tool. Restructure so the architecture and design decisions are visible, not just setup instructions.
+
+---
+
 ## [0.4.0] — 2026-03-30
 
 ### Changed
