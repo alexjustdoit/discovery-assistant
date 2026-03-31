@@ -15,7 +15,7 @@ OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
 
 class OllamaProvider(LLMProvider):
-    def __init__(self, model: str = "llama3.1:8b"):
+    def __init__(self, model: str = "phi4"):
         self.model = model
         self.base_url = os.getenv("OLLAMA_BASE_URL", OLLAMA_BASE_URL)
 
@@ -36,7 +36,7 @@ class OllamaProvider(LLMProvider):
         except httpx.ConnectError:
             raise ConnectionError(
                 f"Cannot connect to Ollama at {self.base_url}. "
-                "Start Ollama and run: ollama pull llama3.1:8b"
+                "Start Ollama and run: ollama pull phi4"
             )
         latency_ms = (time.monotonic() - start) * 1000
         data = response.json()

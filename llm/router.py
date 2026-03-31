@@ -13,7 +13,7 @@ class LLMRouter:
     USE_LOCAL_LLM=false → OpenAIProvider (gpt-5.4-nano) or ClaudeProvider (quality tasks)
     """
 
-    DEFAULT_LOCAL_MODEL = "llama3.1:8b"
+    DEFAULT_LOCAL_MODEL = "phi4"
     DEFAULT_CHEAP_API = "gpt-5.4-nano"
     DEFAULT_QUALITY_API = "claude-haiku-4-5-20251001"
 
