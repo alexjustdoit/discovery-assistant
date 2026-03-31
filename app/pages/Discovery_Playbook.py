@@ -1,8 +1,8 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
+from app.components.engagement_nav import render_engagement_nav  # also ensures sys.path
 import config  # noqa: F401
-from app.components.engagement_nav import render_engagement_nav
 from data.models import Question
 from data.store import list_sessions, load_session, save_session
 from features.question_generation import (
