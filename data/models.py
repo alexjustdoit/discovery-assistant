@@ -71,6 +71,7 @@ class Session(BaseModel):
     meetings: list[Meeting] = Field(default_factory=list)
     summary: Optional[DiscoverySummary] = None
     email_draft: Optional[str] = None
+    archived: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -81,3 +82,26 @@ class Session(BaseModel):
         """Returns (asked, total)."""
         asked = sum(1 for q in self.questions if q.asked)
         return asked, len(self.questions)
+
+    def discovery_depth(self) -> float:
+        """
+        Composite 0–1 score: how well-understood this engagement is.
+        60% — questions with substantive notes / total questions
+        20% — categories with at least one answered question / total categories
+        10% — touchpoints logged (caps at 3)
+        10% — summary exists
+        """
+        if not self.questions:
+            return 0.0
+        notes_score = sum(1 for q in self.questions if q.answer.strip()) / len(self.questions)
+        categories = {q.category for q in self.questions}
+        covered = {q.category for q in self.questions if q.answer.strip()}
+        coverage_score = len(covered) / len(categories) if categories else 0.0
+        touchpoint_score = min(len(self.meetings), 3) / 3
+        summary_score = 1.0 if self.summary is not None else 0.0
+        return (
+            0.60 * notes_score
+            + 0.20 * coverage_score
+            + 0.10 * touchpoint_score
+            + 0.10 * summary_score
+        )

@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0] — 2026-03-31
+
+### Added
+- **Discovery depth score** — composite 0–100% metric on every engagement card: how well-understood is this customer? Weights: notes on questions (60%), categories with ≥1 answer (20%), touchpoints logged capped at 3 (10%), summary exists (10%). Formula in `Session.discovery_depth()` (`data/models.py`)
+- **Archive / restore** — ⋯ popover on each engagement card; Archive moves it to a collapsed "Archived" section at the bottom of Home with a Restore option. Removes the Delete button from the main card row into the popover to reduce accidental deletes
+- **Home page filters** — Mode (All / Pre-sales / Post-sales) and Discovery depth (Any / 20%+ / 40%+ / 70%+) selectors above the engagement list
+- **New from template** — "Use as Template" in the ⋯ popover pre-fills New Engagement with all context fields from an existing engagement; clears on first render so re-navigating starts fresh
+- **9 new tests** — `discovery_depth` (empty, no answers, partial, capped touchpoints, full score), `archived` default/roundtrip/backward compat, `archive_session`/`restore_session` store functions
+
+### Changed
+- **README** — added Discovery depth score explanation after the Workflow section
+
 ## [1.0.0] — 2026-03-31
 
 ### Added

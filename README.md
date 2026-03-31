@@ -30,6 +30,9 @@ Two demo engagements are pre-loaded to show the full workflow without any setup:
 
 **5. Follow-up Email** — draft a ready-to-send post-call email from the summary. Editable, persistent, auto-cleared if the summary is edited.
 
+**Discovery depth score**
+Each engagement card shows a composite depth score (0–100%) answering "how well do I actually understand this customer?" — separate from how many questions have been marked asked. Weights: notes written on questions (60%), categories with at least one answer (20%), touchpoints logged (10%), summary exists (10%). The goal is a signal that reflects genuine discovery quality, not just checkbox activity. Formula lives in `Session.discovery_depth()` in `data/models.py`.
+
 ---
 
 ## Architecture & design decisions

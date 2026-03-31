@@ -36,6 +36,18 @@ def list_sessions() -> list[Session]:
     return sessions
 
 
+def archive_session(session_id: str) -> None:
+    session = load_session(session_id)
+    session.archived = True
+    save_session(session)
+
+
+def restore_session(session_id: str) -> None:
+    session = load_session(session_id)
+    session.archived = False
+    save_session(session)
+
+
 def delete_session(session_id: str) -> None:
     path = _sessions_dir() / f"{session_id}.json"
     if path.exists():

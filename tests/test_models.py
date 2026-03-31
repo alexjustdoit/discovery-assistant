@@ -153,3 +153,101 @@ def test_session_without_meetings_field_loads_cleanly():
     data.pop("meetings", None)
     restored = Session.model_validate_json(json.dumps(data))
     assert restored.meetings == []
+
+
+# ── archived field ────────────────────────────────────────────────────────────
+
+def test_archived_defaults_to_false():
+    session = make_session()
+    assert session.archived is False
+
+
+def test_archived_roundtrip():
+    session = make_session()
+    session.archived = True
+    restored = Session.model_validate_json(session.model_dump_json())
+    assert restored.archived is True
+
+
+def test_archived_missing_from_json_loads_as_false():
+    """Old session JSON files without archived field load cleanly."""
+    session = make_session()
+    data = json.loads(session.model_dump_json())
+    data.pop("archived", None)
+    restored = Session.model_validate_json(json.dumps(data))
+    assert restored.archived is False
+
+
+# ── discovery_depth ───────────────────────────────────────────────────────────
+
+def test_discovery_depth_empty_session():
+    session = make_session()
+    assert session.discovery_depth() == 0.0
+
+
+def test_discovery_depth_no_answers():
+    session = make_session()
+    session.questions = [
+        Question(category="Technical Fit", text="Q1"),
+        Question(category="Technical Fit", text="Q2"),
+    ]
+    assert session.discovery_depth() == 0.0
+
+
+def test_discovery_depth_all_answered_single_category():
+    session = make_session()
+    session.questions = [
+        Question(category="Technical Fit", text="Q1", answer="A1"),
+        Question(category="Technical Fit", text="Q2", answer="A2"),
+    ]
+    # notes_score = 1.0, coverage_score = 1.0, touchpoints = 0, summary = 0
+    expected = 0.60 * 1.0 + 0.20 * 1.0 + 0.10 * 0.0 + 0.10 * 0.0
+    assert abs(session.discovery_depth() - expected) < 1e-9
+
+
+def test_discovery_depth_partial_answers_two_categories():
+    session = make_session()
+    session.questions = [
+        Question(category="Technical Fit", text="Q1", answer="A1"),
+        Question(category="Technical Fit", text="Q2"),  # unanswered
+        Question(category="Integrations & Architecture", text="Q3"),  # unanswered
+    ]
+    # notes_score = 1/3, coverage_score = 1/2
+    expected = 0.60 * (1 / 3) + 0.20 * (1 / 2)
+    assert abs(session.discovery_depth() - expected) < 1e-9
+
+
+def test_discovery_depth_touchpoints_capped_at_3():
+    session = make_session()
+    session.questions = [Question(category="Technical Fit", text="Q1", answer="A1")]
+    session.meetings = [
+        Meeting(date=date(2026, 3, 1), title="Call 1"),
+        Meeting(date=date(2026, 3, 8), title="Call 2"),
+        Meeting(date=date(2026, 3, 15), title="Call 3"),
+        Meeting(date=date(2026, 3, 22), title="Call 4"),  # 4th; should cap at 3
+    ]
+    depth = session.discovery_depth()
+    # touchpoint contribution should be 0.10 * 1.0 (capped), not 0.10 * (4/3)
+    assert depth <= 1.0
+
+
+def test_discovery_depth_full_score():
+    from data.models import DiscoverySummary
+    session = make_session()
+    session.questions = [
+        Question(category="Technical Fit", text="Q1", answer="A1"),
+        Question(category="Integrations & Architecture", text="Q2", answer="A2"),
+    ]
+    session.meetings = [
+        Meeting(date=date(2026, 3, 1), title="Call 1"),
+        Meeting(date=date(2026, 3, 8), title="Call 2"),
+        Meeting(date=date(2026, 3, 15), title="Call 3"),
+    ]
+    session.summary = DiscoverySummary(
+        key_findings=["Finding"],
+        technical_requirements=["Req"],
+        risks_and_concerns=[],
+        recommended_next_steps=["Next"],
+        raw_text="Summary text",
+    )
+    assert abs(session.discovery_depth() - 1.0) < 1e-9

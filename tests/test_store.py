@@ -8,7 +8,7 @@ from unittest.mock import patch
 import pytest
 
 from data.models import DiscoveryMode, Question, Session, SessionContext
-from data.store import delete_session, list_sessions, load_session, save_session, seed_demo_sessions
+from data.store import archive_session, delete_session, list_sessions, load_session, restore_session, save_session, seed_demo_sessions
 
 
 def make_session() -> Session:
@@ -156,3 +156,41 @@ def test_seed_demo_sessions_missing_dir_is_noop(tmp_sessions_dir, monkeypatch, t
         assert list_sessions() == []
     finally:
         config.DEMO_SESSIONS_DIR = original
+
+
+# ── archive / restore ─────────────────────────────────────────────────────────
+
+def test_archive_session(tmp_sessions_dir):
+    session = make_session()
+    save_session(session)
+    archive_session(session.id)
+    loaded = load_session(session.id)
+    assert loaded.archived is True
+
+
+def test_restore_session(tmp_sessions_dir):
+    session = make_session()
+    session.archived = True
+    save_session(session)
+    restore_session(session.id)
+    loaded = load_session(session.id)
+    assert loaded.archived is False
+
+
+def test_archive_does_not_delete_session(tmp_sessions_dir):
+    session = make_session()
+    save_session(session)
+    archive_session(session.id)
+    assert load_session(session.id) is not None
+
+
+def test_list_sessions_includes_archived(tmp_sessions_dir):
+    active = make_session()
+    archived = make_session()
+    save_session(active)
+    save_session(archived)
+    archive_session(archived.id)
+    sessions = list_sessions()
+    assert len(sessions) == 2
+    archived_ids = [s.id for s in sessions if s.archived]
+    assert archived.id in archived_ids
