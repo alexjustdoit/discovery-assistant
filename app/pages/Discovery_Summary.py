@@ -65,7 +65,7 @@ session_id = session_options[selected_label]
 session = load_session(session_id)
 st.session_state["active_session_id"] = session_id
 
-render_engagement_nav("summary")
+render_engagement_nav("summary", mode_label="Pre-sales (SA)" if session.mode.value == "pre_sales" else "Post-sales (TAM)")
 
 answered = session.answered_questions()
 if not answered:

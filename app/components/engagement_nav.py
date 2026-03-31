@@ -16,10 +16,11 @@ _PAGES = [
 ]
 
 
-def render_engagement_nav(current: str) -> None:
+def render_engagement_nav(current: str, mode_label: str = "") -> None:
     """
     Inline cross-page nav for the three working pages.
     current: "playbook" | "touchpoint_log" | "summary"
+    mode_label: optional mode string shown below the nav, e.g. "Pre-sales (SA)"
     """
     cols = st.columns(len(_PAGES))
     for col, (label, key, path) in zip(cols, _PAGES):
@@ -33,4 +34,6 @@ def render_engagement_nav(current: str) -> None:
             )
             if clicked and not is_current:
                 st.switch_page(path)
+    if mode_label:
+        st.caption(mode_label)
     st.divider()

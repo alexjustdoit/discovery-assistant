@@ -1,24 +1,19 @@
 # Changelog
 
-## [Proposed — v1.0.0]
+## [1.0.0] — 2026-03-31
 
-### Cross-page navigation
-Add contextual nav shortcuts on each working page (Discovery Playbook, Touchpoint Log, Discovery Summary) so users can jump between pages for the active engagement without going through the sidebar or returning to Home.
+### Added
+- **Cross-page engagement nav** — three-button nav bar on every working page (Discovery Playbook, Touchpoint Log, Discovery Summary); current page highlighted as primary, others navigate while preserving the active engagement via `active_session_id`
+- **Delete question** — trash icon with popover confirmation on each question in view mode; cleans up new/editing state sets on delete
+- **Engagement mode indicator** — Pre-sales (SA) / Post-sales (TAM) label shown below the nav bar on all three working pages via `render_engagement_nav`
 
-### Delete a question
-Allow removing a generated question from the playbook. Useful when AI generates something irrelevant to the specific engagement.
+### Changed
+- **Demo data enriched** — Meridian Financial: 6 additional answered questions from the architecture deep-dive (data sources, Azure/cloud preference, monitoring gaps, Kafka history, stakeholder map including CRO, open-source evaluation); brings answered count from 4 to 10/24. Evergreen Health: added realistic follow-up email draft from the March 28 renewal call
+- **README rewritten** — leads with the problem and "why I built this"; architecture & design decisions section covers LLM routing, Ollama structured output fix, data model, Streamlit patterns, and test strategy; setup condensed to brief platform-aware instructions
+- **Home page copy** — leads with the problem (scattered notes, no structure) before describing the workflow
 
-### Engagement mode indicator
-Surface the pre-sales / post-sales mode visibly on the playbook and summary pages so context isn't lost once you're inside an engagement.
-
-### Demo data review
-Audit the two demo engagements (Meridian Financial SA, Evergreen Health TAM) to ensure questions, notes, touchpoints, and summaries read like authentic SA/TAM output. First thing any recruiter or hiring manager sees.
-
-### Home page value prop
-Rewrite the hero copy to lead with the problem and workflow, not a feature list. Relevant for portfolio/interview context.
-
-### README rewrite
-Lead with the problem and the thinking behind the tool. Restructure so the architecture and design decisions are visible, not just setup instructions.
+### Fixed
+- `engagement_nav.py` now inserts project root into `sys.path` on import; page files import it before `config` to guarantee path setup survives Streamlit hot-reload
 
 ---
 

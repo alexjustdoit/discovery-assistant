@@ -41,7 +41,7 @@ if st.session_state.get("_qb_session_id") != session_id:
 session = load_session(session_id)
 st.session_state["active_session_id"] = session_id
 
-render_engagement_nav("playbook")
+render_engagement_nav("playbook", mode_label="Pre-sales (SA)" if session.mode.value == "pre_sales" else "Post-sales (TAM)")
 
 new_ids: set[str] = st.session_state.setdefault("new_question_ids", set())
 editing_ids: set[str] = st.session_state.setdefault("editing_question_ids", set())

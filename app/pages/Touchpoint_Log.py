@@ -31,7 +31,7 @@ session_id = session_options[selected_label]
 session = load_session(session_id)
 st.session_state["active_session_id"] = session_id
 
-render_engagement_nav("touchpoint_log")
+render_engagement_nav("touchpoint_log", mode_label="Pre-sales (SA)" if session.mode.value == "pre_sales" else "Post-sales (TAM)")
 
 meeting_count = len(session.meetings)
 st.caption(f"{session.context.company} · {session.context.stage} · {meeting_count} touchpoint{'s' if meeting_count != 1 else ''} logged")
