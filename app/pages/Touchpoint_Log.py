@@ -6,12 +6,12 @@ import config  # noqa: F401
 from data.models import Meeting
 from data.store import list_sessions, load_session, save_session
 
-st.header("Meeting Log")
+st.header("Touchpoint Log")
 
-# ── Session picker ────────────────────────────────────────────────────────────
+# ── Engagement picker ─────────────────────────────────────────────────────────
 sessions = list_sessions()
 if not sessions:
-    st.info("No sessions yet. Create one in **New Session**.")
+    st.info("No engagements yet. Create one in **New Engagement**.")
     st.stop()
 
 session_options = {
@@ -25,16 +25,16 @@ if active_id:
     if active_id in ids:
         default_index = ids.index(active_id)
 
-selected_label = st.selectbox("Session", options=list(session_options.keys()), index=default_index)
+selected_label = st.selectbox("Engagement", options=list(session_options.keys()), index=default_index)
 session_id = session_options[selected_label]
 session = load_session(session_id)
 st.session_state["active_session_id"] = session_id
 
 meeting_count = len(session.meetings)
-st.caption(f"{session.context.company} · {session.context.stage} · {meeting_count} meeting{'s' if meeting_count != 1 else ''} logged")
+st.caption(f"{session.context.company} · {session.context.stage} · {meeting_count} touchpoint{'s' if meeting_count != 1 else ''} logged")
 
-# ── Log a meeting ─────────────────────────────────────────────────────────────
-with st.expander("Log a meeting", expanded=meeting_count == 0):
+# ── Log a touchpoint ──────────────────────────────────────────────────────────
+with st.expander("Log a touchpoint", expanded=meeting_count == 0):
     with st.form("log_meeting_form"):
         col1, col2 = st.columns(2)
         with col1:
@@ -44,7 +44,7 @@ with st.expander("Log a meeting", expanded=meeting_count == 0):
             meeting_attendees = st.text_input("Attendees", placeholder="Marcus Chen (VP Eng), You (SA)...")
         meeting_notes = st.text_area("Notes", height=160, placeholder="What happened, what you learned, open questions, follow-ups...")
 
-        if st.form_submit_button("Log Meeting", type="primary"):
+        if st.form_submit_button("Log Touchpoint", type="primary"):
             if not meeting_title.strip():
                 st.error("Title is required.")
             else:

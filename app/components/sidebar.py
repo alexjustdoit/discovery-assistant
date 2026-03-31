@@ -5,7 +5,7 @@ import streamlit as st
 def render_sidebar() -> None:
     with st.sidebar:
         st.markdown("## Discovery Assistant")
-        st.caption("Pre-sales & post-sales discovery, powered by AI.")
+        st.caption("Customer engagement intelligence for SAs and TAMs.")
         st.divider()
 
         use_local = os.getenv("USE_LOCAL_LLM", "true").lower() == "true"

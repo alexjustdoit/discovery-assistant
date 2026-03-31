@@ -1,8 +1,8 @@
 # Discovery Assistant
 
-AI-powered technical discovery for pre-sales (SA) and post-sales (TAM) workflows.
+Customer engagement intelligence for SAs and TAMs.
 
-Paste in context about a customer or prospect, get a tailored question bank, capture notes during the call, and generate a shareable summary and follow-up email — all in one place.
+Paste in context about a customer or prospect, get a tailored discovery playbook, capture notes during the call, log touchpoints, and generate a shareable summary and follow-up email — all in one place.
 
 ## Features
 
@@ -113,8 +113,8 @@ pytest tests/ -v
 
 | Page | Description |
 |---|---|
-| Home | Browse and manage all sessions; demo session cards; New Session CTA |
-| New Session | Input context and generate the initial question bank |
-| Question Bank | Work through questions, capture notes, add custom questions, refresh with AI |
-| Meeting Log | Log and browse meeting touchpoints (date, attendees, notes) for a session |
+| Home | Browse and manage all engagements; demo engagement cards; New Engagement CTA |
+| New Engagement | Input customer context and generate the initial discovery playbook |
+| Discovery Playbook | Work through questions, capture notes, add custom questions, refresh with AI |
+| Touchpoint Log | Log and browse touchpoints (date, attendees, notes) for an engagement |
 | Discovery Summary | AI-generated debrief, inline editing, follow-up email draft, markdown export |

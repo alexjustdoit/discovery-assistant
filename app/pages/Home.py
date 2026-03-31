@@ -10,16 +10,16 @@ DEMO_SESSION_IDS = {
 
 st.markdown("## Discovery Assistant")
 st.markdown(
-    "AI-powered discovery for pre-sales and post-sales teams. "
-    "Input customer context, get a tailored question bank, capture notes during the call, "
-    "log meeting touchpoints, and synthesize a shareable summary and follow-up email — in one workflow."
+    "Customer engagement intelligence for SAs and TAMs. "
+    "Input customer context, get a tailored discovery playbook, capture notes during the call, "
+    "log touchpoints, and synthesize a shareable summary and follow-up email — in one workflow."
 )
 
 st.divider()
 
-# ── Demo sessions ─────────────────────────────────────────────────────────────
+# ── Demo engagements ──────────────────────────────────────────────────────────
 st.subheader("Explore the demos")
-st.caption("Two pre-loaded sessions showing the full SA and TAM workflows.")
+st.caption("Two pre-loaded engagements showing the full SA and TAM workflows.")
 
 demo_sessions = []
 for sid in DEMO_SESSION_IDS:
@@ -32,7 +32,7 @@ for sid in DEMO_SESSION_IDS:
 demo_sessions.sort(key=lambda s: s.mode.value)
 
 if not demo_sessions:
-    st.info("Demo sessions not found. Restart the app to re-seed them.")
+    st.info("Demo engagements not found. Restart the app to re-seed them.")
 else:
     cols = st.columns(len(demo_sessions))
     for col, session in zip(cols, demo_sessions):
@@ -54,18 +54,18 @@ else:
                 else:
                     st.markdown(f"- {asked}/{total} questions answered")
                 if meeting_count:
-                    st.markdown(f"- {meeting_count} meetings logged")
+                    st.markdown(f"- {meeting_count} touchpoints logged")
 
                 st.write("")
-                if st.button("Open Question Bank", key=f"demo_qb_{session.id}", use_container_width=True, type="primary"):
+                if st.button("Open Playbook", key=f"demo_qb_{session.id}", use_container_width=True, type="primary"):
                     st.session_state["active_session_id"] = session.id
-                    st.switch_page("pages/Question_Bank.py")
+                    st.switch_page("pages/Discovery_Playbook.py")
 
                 bcol1, bcol2 = st.columns(2)
                 with bcol1:
-                    if st.button("Meeting Log", key=f"demo_ml_{session.id}", use_container_width=True):
+                    if st.button("Touchpoint Log", key=f"demo_ml_{session.id}", use_container_width=True):
                         st.session_state["active_session_id"] = session.id
-                        st.switch_page("pages/Meeting_Log.py")
+                        st.switch_page("pages/Touchpoint_Log.py")
                 with bcol2:
                     if has_summary:
                         if st.button("Summary", key=f"demo_sum_{session.id}", use_container_width=True):
@@ -74,16 +74,16 @@ else:
 
 st.divider()
 
-# ── User sessions ─────────────────────────────────────────────────────────────
+# ── User engagements ──────────────────────────────────────────────────────────
 all_sessions = list_sessions()
 user_sessions = [s for s in all_sessions if s.id not in DEMO_SESSION_IDS]
 
-st.subheader("Your sessions")
+st.subheader("Your engagements")
 
 if not user_sessions:
-    st.caption("No sessions yet.")
-    if st.button("Start a new session", type="primary"):
-        st.switch_page("pages/New_Session.py")
+    st.caption("No engagements yet.")
+    if st.button("Start a new engagement", type="primary"):
+        st.switch_page("pages/New_Engagement.py")
 else:
     for session in user_sessions:
         asked, total = session.progress()
@@ -91,7 +91,7 @@ else:
         has_summary = session.summary is not None
         status = "Summary ready" if has_summary else f"{asked}/{total} answered"
         meeting_count = len(session.meetings)
-        meeting_str = f" · {meeting_count} meetings" if meeting_count else ""
+        meeting_str = f" · {meeting_count} touchpoints" if meeting_count else ""
 
         with st.container(border=True):
             col1, col2, col3 = st.columns([4, 1, 1])
@@ -101,12 +101,12 @@ else:
             with col2:
                 if st.button("Open", key=f"user_{session.id}", use_container_width=True, type="primary"):
                     st.session_state["active_session_id"] = session.id
-                    st.switch_page("pages/Question_Bank.py")
+                    st.switch_page("pages/Discovery_Playbook.py")
             with col3:
                 if st.button("Delete", key=f"del_{session.id}", use_container_width=True, type="secondary"):
                     delete_session(session.id)
                     st.rerun()
 
     st.write("")
-    if st.button("New session", type="secondary"):
-        st.switch_page("pages/New_Session.py")
+    if st.button("New Engagement", type="secondary"):
+        st.switch_page("pages/New_Engagement.py")

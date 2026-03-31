@@ -9,12 +9,12 @@ from features.question_generation import (
     regenerate_unanswered_questions,
 )
 
-st.header("Question Bank")
+st.header("Discovery Playbook")
 
-# Session picker
+# Engagement picker
 sessions = list_sessions()
 if not sessions:
-    st.info("No sessions yet. Create one in **New Session**.")
+    st.info("No engagements yet. Create one in **New Engagement**.")
     st.stop()
 
 session_options = {f"{s.context.company} — {s.mode.value.replace('_', '-')} — {s.created_at.strftime('%b %d')}": s.id for s in sessions}
@@ -26,7 +26,7 @@ if active_id:
     if active_id in ids:
         default_index = ids.index(active_id)
 
-selected_label = st.selectbox("Session", options=list(session_options.keys()), index=default_index)
+selected_label = st.selectbox("Engagement", options=list(session_options.keys()), index=default_index)
 session_id = session_options[selected_label]
 
 # Reset tracking when switching sessions
@@ -234,7 +234,7 @@ for category, questions in categories.items():
                                 with fu_col:
                                     st.caption(f"→ {fu}")
                                 with add_col:
-                                    if st.button("＋", key=f"promote_{q.id}_{fu_idx}", help="Add to question bank"):
+                                    if st.button("＋", key=f"promote_{q.id}_{fu_idx}", help="Add to playbook"):
                                         new_q = Question(category=q.category, text=fu)
                                         session.questions.append(new_q)
                                         q.follow_ups = [f for f in q.follow_ups if f != fu]

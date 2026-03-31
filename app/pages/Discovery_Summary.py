@@ -48,7 +48,7 @@ st.header("Discovery Summary")
 
 sessions = list_sessions()
 if not sessions:
-    st.info("No sessions yet. Create one in **New Session**.")
+    st.info("No engagements yet. Create one in **New Engagement**.")
     st.stop()
 
 session_options = {f"{s.context.company} — {s.mode.value.replace('_', '-')} — {s.created_at.strftime('%b %d')}": s.id for s in sessions}
@@ -59,14 +59,14 @@ if active_id:
     if active_id in ids:
         default_index = ids.index(active_id)
 
-selected_label = st.selectbox("Session", options=list(session_options.keys()), index=default_index)
+selected_label = st.selectbox("Engagement", options=list(session_options.keys()), index=default_index)
 session_id = session_options[selected_label]
 session = load_session(session_id)
 st.session_state["active_session_id"] = session_id
 
 answered = session.answered_questions()
 if not answered:
-    st.warning("No answered questions yet. Go to **Question Bank** to capture notes first.")
+    st.warning("No answered questions yet. Go to **Discovery Playbook** to capture notes first.")
     st.stop()
 
 st.caption(f"{len(answered)} answered questions · {session.context.company} · {session.context.stage}")

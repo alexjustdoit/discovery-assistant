@@ -5,7 +5,7 @@ from data.models import DiscoveryMode, Session, SessionContext
 from data.store import save_session
 from features.question_generation import generate_questions
 
-st.header("New Discovery Session")
+st.header("New Engagement")
 
 with st.form("new_session_form"):
     mode = st.radio(
@@ -52,7 +52,7 @@ if submitted:
                 session.questions = questions
                 save_session(session)
                 st.session_state["active_session_id"] = session.id
-                st.success(f"Generated {len(questions)} questions. Head to **Question Bank** to start your session.")
-                st.info(f"Session ID: `{session.id}`")
+                st.success(f"Generated {len(questions)} questions. Head to **Discovery Playbook** to start your engagement.")
+                st.info(f"Engagement ID: `{session.id}`")
             except Exception as e:
                 st.error(f"Failed to generate questions: {e}")

@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.0] — 2026-03-30
+
+### Changed
+- **Terminology refresh** — language updated to reflect long-term customer relationships: "Session" → "Engagement", "Question Bank" → "Discovery Playbook", "Meeting Log" → "Touchpoint Log" across all pages, nav, buttons, and copy
+- Sidebar tagline updated: "Customer engagement intelligence for SAs and TAMs"
+- Home page copy updated to match new terminology throughout
+
+---
+
 ## [0.3.0] — 2026-03-30
 
 ### Added
