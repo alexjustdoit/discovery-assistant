@@ -15,7 +15,7 @@ Paste in context about a customer or prospect, get a tailored question bank, cap
 - **Follow-up email draft** — generates a ready-to-send post-call email from the summary; editable and persistent
 - **Markdown export** — full summary + Q&A notes
 - **Demo sessions** — two pre-loaded realistic sessions (Meridian Financial SA, Evergreen Health TAM) with meeting logs ready to explore on first launch
-- **Session persistence** — sessions saved as JSON; browse, resume, or delete from Saved Sessions
+- **Session persistence** — sessions saved as JSON; browse, open, and delete from the Home page
 
 ## Stack
 
@@ -113,9 +113,8 @@ pytest tests/ -v
 
 | Page | Description |
 |---|---|
-| Home | Landing page with demo session cards and quick access to recent sessions |
+| Home | Browse and manage all sessions; demo session cards; New Session CTA |
 | New Session | Input context and generate the initial question bank |
 | Question Bank | Work through questions, capture notes, add custom questions, refresh with AI |
 | Meeting Log | Log and browse meeting touchpoints (date, attendees, notes) for a session |
 | Discovery Summary | AI-generated debrief, inline editing, follow-up email draft, markdown export |
-| Saved Sessions | Browse, resume, and delete past sessions |

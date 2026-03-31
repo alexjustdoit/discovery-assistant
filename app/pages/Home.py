@@ -1,7 +1,7 @@
 import streamlit as st
 
 import config  # noqa: F401
-from data.store import list_sessions, load_session
+from data.store import delete_session, list_sessions, load_session
 
 DEMO_SESSION_IDS = {
     "a1b2c3d4-0001-4000-8000-ef1234567890",
@@ -85,7 +85,7 @@ if not user_sessions:
     if st.button("Start a new session", type="primary"):
         st.switch_page("pages/New_Session.py")
 else:
-    for session in user_sessions[:5]:  # show up to 5 most recent
+    for session in user_sessions:
         asked, total = session.progress()
         mode_label = "Pre-sales" if session.mode.value == "pre_sales" else "Post-sales"
         has_summary = session.summary is not None
@@ -94,7 +94,7 @@ else:
         meeting_str = f" · {meeting_count} meetings" if meeting_count else ""
 
         with st.container(border=True):
-            col1, col2 = st.columns([4, 1])
+            col1, col2, col3 = st.columns([4, 1, 1])
             with col1:
                 st.markdown(f"**{session.context.company}**")
                 st.caption(f"{mode_label} · {session.context.stage} · {status}{meeting_str} · Updated {session.updated_at.strftime('%b %d')}")
@@ -102,9 +102,10 @@ else:
                 if st.button("Open", key=f"user_{session.id}", use_container_width=True, type="primary"):
                     st.session_state["active_session_id"] = session.id
                     st.switch_page("pages/Question_Bank.py")
-
-    if len(user_sessions) > 5:
-        st.caption(f"+ {len(user_sessions) - 5} more in Saved Sessions")
+            with col3:
+                if st.button("Delete", key=f"del_{session.id}", use_container_width=True, type="secondary"):
+                    delete_session(session.id)
+                    st.rerun()
 
     st.write("")
     if st.button("New session", type="secondary"):
