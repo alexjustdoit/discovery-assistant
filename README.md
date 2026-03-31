@@ -107,7 +107,7 @@ When `USE_LOCAL_LLM=false`, `OPENAI_API_KEY` is required. `ANTHROPIC_API_KEY` is
 pytest tests/ -v
 ```
 
-42 tests covering models, session persistence, question generation, summary generation, and email generation (all LLM calls mocked).
+45 tests covering models, session persistence, question generation, summary generation, and email generation (all LLM calls mocked).
 
 ## Pages
 

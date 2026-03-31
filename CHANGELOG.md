@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.0] — 2026-03-30
+
+### Added
+- **Context-aware question update prompt** — after editing session context, users choose to regenerate unanswered questions for the new context, append net-new questions, or keep existing; answered questions always preserved
+- **Follow-up quick-add** — "＋" button next to each follow-up probe promotes it directly into the question bank for that category; flagged as new
+- **Inline question editing** — "✏" popover on every question lets users edit question text in place; saved immediately; reflected in summary and email generation
+- **3 new tests** — `regenerate_unanswered_questions`: preserves answered, does not mutate session, passes answered texts to avoid duplication
+
+---
+
 ## [0.2.0] — 2026-03-30
 
 ### Added

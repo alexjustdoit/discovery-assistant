@@ -13,6 +13,7 @@ from features.question_generation import (
     _GeneratedQuestion,
     generate_questions,
     generate_additional_questions,
+    regenerate_unanswered_questions,
 )
 
 
@@ -163,3 +164,57 @@ def test_generate_additional_questions_passes_existing_to_prompt(mock_router):
     _, user_prompt, _ = mock_provider.complete_structured.call_args[0]
     assert "What is your current solution?" in user_prompt
     assert "How long does reporting take?" in user_prompt
+
+
+# ── regenerate_unanswered_questions ──────────────────────────────────────────
+
+@patch("features.question_generation.router")
+def test_regenerate_preserves_answered_questions(mock_router):
+    """Answered questions (asked=True or with notes) must not be dropped."""
+    from data.models import Question
+    session = make_session()
+    answered_q = Question(category="Technical Fit", text="Current solution?", asked=True, answer="Excel.")
+    noted_q = Question(category="Technical Fit", text="Pain points?", asked=False, answer="Month-end is slow.")
+    unanswered_q = Question(category="Technical Fit", text="Future state?", asked=False)
+    session.questions = [answered_q, noted_q, unanswered_q]
+
+    mock_provider = MagicMock()
+    mock_provider.complete_structured.return_value = (_mock_question_bank(PRE_SALES_CATEGORIES), MagicMock())
+    mock_router.get_provider.return_value = mock_provider
+
+    result = regenerate_unanswered_questions(session)
+
+    result_ids = {q.id for q in result}
+    assert answered_q.id in result_ids
+    assert noted_q.id in result_ids
+
+
+@patch("features.question_generation.router")
+def test_regenerate_does_not_mutate_session(mock_router):
+    """regenerate_unanswered_questions should return questions, not mutate session."""
+    session = make_session()
+    mock_provider = MagicMock()
+    mock_provider.complete_structured.return_value = (_mock_question_bank(PRE_SALES_CATEGORIES), MagicMock())
+    mock_router.get_provider.return_value = mock_provider
+
+    original_questions = list(session.questions)
+    regenerate_unanswered_questions(session)
+    assert session.questions == original_questions
+
+
+@patch("features.question_generation.router")
+def test_regenerate_excludes_answered_from_prompt(mock_router):
+    """Answered question texts should appear in the existing_texts block to avoid duplication."""
+    from data.models import Question
+    session = make_session()
+    answered_q = Question(category="Technical Fit", text="What is your current solution?", asked=True, answer="Excel.")
+    session.questions = [answered_q]
+
+    mock_provider = MagicMock()
+    mock_provider.complete_structured.return_value = (_mock_question_bank(PRE_SALES_CATEGORIES), MagicMock())
+    mock_router.get_provider.return_value = mock_provider
+
+    regenerate_unanswered_questions(session)
+
+    _, user_prompt, _ = mock_provider.complete_structured.call_args[0]
+    assert "What is your current solution?" in user_prompt

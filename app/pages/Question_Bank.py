@@ -3,7 +3,10 @@ import streamlit as st
 import config  # noqa: F401
 from data.models import Question
 from data.store import list_sessions, load_session, save_session
-from features.question_generation import generate_additional_questions
+from features.question_generation import (
+    generate_additional_questions,
+    regenerate_unanswered_questions,
+)
 
 st.header("Question Bank")
 
@@ -29,6 +32,7 @@ session_id = session_options[selected_label]
 if st.session_state.get("_qb_session_id") != session_id:
     st.session_state["new_question_ids"] = set()
     st.session_state["_qb_session_id"] = session_id
+    st.session_state.pop("context_updated_for", None)
 
 session = load_session(session_id)
 st.session_state["active_session_id"] = session_id
@@ -70,7 +74,53 @@ with st.expander("Edit session context", expanded=False):
             session.context.tech_stack = edit_tech_stack
             session.context.notes = edit_notes
             save_session(session)
-            st.success("Session context updated.")
+            st.session_state["context_updated_for"] = session_id
+            st.rerun()
+
+# ── Post-context-save question update prompt ──────────────────────────────────
+if st.session_state.get("context_updated_for") == session_id:
+    unanswered_count = sum(1 for q in session.questions if not q.asked and not q.answer.strip())
+    with st.info("Session context updated.", icon="✅"):
+        pass
+    if unanswered_count > 0:
+        st.markdown(f"**{unanswered_count} unanswered questions** may no longer fit the updated context. What would you like to do?")
+        col_a, col_b, col_c = st.columns(3)
+        with col_a:
+            if st.button("Update unanswered questions", type="primary", use_container_width=True,
+                         help="Regenerate all unanswered questions for the new context. Answered questions are preserved."):
+                with st.spinner("Regenerating questions... stay on this page until complete."):
+                    try:
+                        updated = regenerate_unanswered_questions(session)
+                        old_ids = {q.id for q in session.questions}
+                        session.questions = updated
+                        save_session(session)
+                        added_ids = {q.id for q in updated if q.id not in old_ids}
+                        st.session_state["new_question_ids"] = new_ids | added_ids
+                        st.session_state.pop("context_updated_for", None)
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Failed to regenerate questions: {e}")
+        with col_b:
+            if st.button("Add net-new questions", use_container_width=True,
+                         help="Keep all existing questions and append additional ones for the new context."):
+                with st.spinner("Generating additional questions... stay on this page until complete."):
+                    try:
+                        new_questions = generate_additional_questions(session)
+                        session.questions.extend(new_questions)
+                        save_session(session)
+                        added_ids = {q.id for q in new_questions}
+                        st.session_state["new_question_ids"] = new_ids | added_ids
+                        st.session_state.pop("context_updated_for", None)
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Failed to generate questions: {e}")
+        with col_c:
+            if st.button("Keep as-is", use_container_width=True):
+                st.session_state.pop("context_updated_for", None)
+                st.rerun()
+    else:
+        if st.button("Dismiss", use_container_width=False):
+            st.session_state.pop("context_updated_for", None)
             st.rerun()
 
 # ── Refresh questions ─────────────────────────────────────────────────────────
@@ -112,11 +162,38 @@ for category, questions in categories.items():
                 with col1:
                     checked = st.checkbox("", value=q.asked, key=f"asked_{q.id}", label_visibility="collapsed")
                 with col2:
-                    st.markdown(f"**{q.text}**")
+                    # Question text + inline edit popover
+                    q_col, edit_col = st.columns([0.93, 0.07])
+                    with q_col:
+                        st.markdown(f"**{q.text}**")
+                    with edit_col:
+                        with st.popover("✏", help="Edit question text"):
+                            edited_text = st.text_area(
+                                "Edit question",
+                                value=q.text,
+                                key=f"edit_text_{q.id}",
+                                height=80,
+                            )
+                            if st.button("Save", key=f"edit_save_{q.id}", type="primary"):
+                                if edited_text.strip() and edited_text.strip() != q.text:
+                                    q.text = edited_text.strip()
+                                    save_session(session)
+                                    st.rerun()
+
                     if q.follow_ups:
                         with st.expander("Follow-ups", expanded=False):
                             for fu in q.follow_ups:
-                                st.caption(f"→ {fu}")
+                                fu_col, add_col = st.columns([0.9, 0.1])
+                                with fu_col:
+                                    st.caption(f"→ {fu}")
+                                with add_col:
+                                    if st.button("＋", key=f"promote_{q.id}_{fu[:20]}", help="Add to question bank"):
+                                        new_q = Question(category=q.category, text=fu)
+                                        session.questions.append(new_q)
+                                        save_session(session)
+                                        st.session_state["new_question_ids"] = new_ids | {new_q.id}
+                                        st.rerun()
+
                     answer = st.text_area(
                         "Notes / answer",
                         value=q.answer,

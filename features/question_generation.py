@@ -94,6 +94,23 @@ def generate_questions(session: Session) -> list[Question]:
     ]
 
 
+def regenerate_unanswered_questions(session: Session) -> list[Question]:
+    """Replace unanswered/unannotated questions with fresh ones for the updated context.
+    Answered questions (asked=True or with notes) are always preserved."""
+    answered = [q for q in session.questions if q.asked or q.answer.strip()]
+    provider = router.get_provider(quality_required=False)
+    system = _build_system(session.mode)
+    existing_texts = [q.text for q in answered][:12] if answered else None
+    user = _build_user(session.context, session.mode, per_category=QUESTIONS_PER_CATEGORY, existing_texts=existing_texts)
+
+    bank, _ = provider.complete_structured(system, user, _QuestionBank)
+    new_questions = [
+        Question(category=q.category, text=q.text, follow_ups=q.follow_ups)
+        for q in bank.questions
+    ]
+    return answered + new_questions
+
+
 def generate_additional_questions(session: Session) -> list[Question]:
     """Generate supplementary questions that avoid duplicating existing ones (does not mutate session)."""
     provider = router.get_provider(quality_required=False)
