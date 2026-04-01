@@ -16,8 +16,14 @@ def _sessions_dir() -> Path:
         import uuid
         import streamlit as st
         if "token" not in st.query_params:
-            st.query_params["token"] = str(uuid.uuid4())
-        path = SESSIONS_DIR / st.query_params["token"]
+            # st.switch_page() drops query params — recover from session state if available
+            token = st.session_state.get("_scc_token") or str(uuid.uuid4())
+            st.query_params["token"] = token
+        else:
+            token = st.query_params["token"]
+        # Always sync to session state so recovery works after st.switch_page()
+        st.session_state["_scc_token"] = token
+        path = SESSIONS_DIR / token
     except Exception:
         path = SESSIONS_DIR
     path.mkdir(parents=True, exist_ok=True)
