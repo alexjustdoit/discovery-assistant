@@ -6,3 +6,4 @@ venv/
 .venv/
 data/sessions/
 .streamlit/secrets.toml
+.streamlit/config.toml
