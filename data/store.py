@@ -9,8 +9,19 @@ from data.models import Session
 
 
 def _sessions_dir() -> Path:
-    from config import SESSIONS_DIR
-    return SESSIONS_DIR
+    from config import SESSIONS_DIR, SCC_MODE
+    if not SCC_MODE:
+        return SESSIONS_DIR
+    try:
+        import uuid
+        import streamlit as st
+        if "token" not in st.query_params:
+            st.query_params["token"] = str(uuid.uuid4())
+        path = SESSIONS_DIR / st.query_params["token"]
+    except Exception:
+        path = SESSIONS_DIR
+    path.mkdir(parents=True, exist_ok=True)
+    return path
 
 
 def save_session(session: Session) -> None:

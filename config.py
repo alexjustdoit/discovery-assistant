@@ -26,3 +26,8 @@ SESSIONS_DIR: Path = Path(__file__).parent / "data" / "sessions"
 SESSIONS_DIR.mkdir(parents=True, exist_ok=True)
 
 DEMO_SESSIONS_DIR: Path = Path(__file__).parent / "data" / "demo_sessions"
+
+# When running on Streamlit Community Cloud, isolate each browser session
+# to its own subdirectory so concurrent demo users don't see each other's data.
+# Set SCC_MODE=true in the SCC secrets dashboard. Never set locally.
+SCC_MODE: bool = os.getenv("SCC_MODE", "false").lower() == "true"
