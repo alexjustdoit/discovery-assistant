@@ -75,10 +75,14 @@ def render_sidebar_header() -> None:
         st.divider()
 
 
-def render_sidebar_footer() -> None:
+def render_sidebar_footer(dev_pages=None) -> None:
     with st.sidebar:
         st.markdown('<div class="sidebar-footer-spacer"></div>', unsafe_allow_html=True)
         st.divider()
+        if dev_pages:
+            with st.expander("Developers"):
+                for page in dev_pages:
+                    st.page_link(page)
         scc_mode = str(st.secrets.get("SCC_MODE", os.getenv("SCC_MODE", "false"))).lower() == "true"
 
         st.subheader("LLM Provider")

@@ -48,9 +48,6 @@ render_sidebar_header()
 with st.sidebar:
     for page in _main_pages:
         st.page_link(page)
-    with st.expander("Developers"):
-        for page in _dev_pages:
-            st.page_link(page)
 
 pg.run()
-render_sidebar_footer()
+render_sidebar_footer(_dev_pages)
