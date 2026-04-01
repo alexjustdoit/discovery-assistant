@@ -2,16 +2,20 @@ import os
 import streamlit as st
 
 
-_DA_ICON_SVG = """
-<div style="display:flex; justify-content:center; padding: 0.75rem 0 0.5rem 0;">
-<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="22" cy="22" r="19" stroke="#1ABC9C" stroke-width="2.5"/>
-  <polygon points="22,7 18,22 22,19.5 26,22" fill="#1ABC9C"/>
-  <polygon points="22,37 26,22 22,24.5 18,22" fill="#1ABC9C" opacity="0.35"/>
-  <circle cx="22" cy="22" r="2.5" fill="#1ABC9C"/>
-  <line x1="3" y1="22" x2="7" y2="22" stroke="#1ABC9C" stroke-width="2" stroke-linecap="round"/>
-  <line x1="37" y1="22" x2="41" y2="22" stroke="#1ABC9C" stroke-width="2" stroke-linecap="round"/>
-</svg>
+_DA_BRANDING_HTML = """
+<div style="min-height: 130px;">
+  <div style="display:flex; justify-content:center; padding: 0.75rem 0 0.5rem 0;">
+    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="22" cy="22" r="19" stroke="#1ABC9C" stroke-width="2.5"/>
+      <polygon points="22,7 18,22 22,19.5 26,22" fill="#1ABC9C"/>
+      <polygon points="22,37 26,22 22,24.5 18,22" fill="#1ABC9C" opacity="0.35"/>
+      <circle cx="22" cy="22" r="2.5" fill="#1ABC9C"/>
+      <line x1="3" y1="22" x2="7" y2="22" stroke="#1ABC9C" stroke-width="2" stroke-linecap="round"/>
+      <line x1="37" y1="22" x2="41" y2="22" stroke="#1ABC9C" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <p style="font-size: 1.75rem; font-weight: 700; line-height: 1.2; margin: 0 0 0.2rem 0;">Discovery Assistant</p>
+  <p style="font-size: 0.875rem; opacity: 0.6; margin: 0; line-height: 1.4;">AI-Powered Customer Engagement for SAs and TAMs</p>
 </div>
 """
 
@@ -56,13 +60,18 @@ section[data-testid="stSidebar"] [data-testid="stSidebarHeader"] {
 }
 </style>"""
 
+_RESET_BTN_CSS = """<style>
+section[data-testid="stSidebar"] div[data-testid="stButton"] button {
+    border: 1px solid #e74c3c !important;
+    letter-spacing: 0.01em;
+}
+</style>"""
+
 
 def render_sidebar_header() -> None:
     with st.sidebar:
         st.markdown(_SIDEBAR_CSS, unsafe_allow_html=True)
-        st.markdown(_DA_ICON_SVG, unsafe_allow_html=True)
-        st.title("Discovery Assistant")
-        st.caption("Customer engagement intelligence for SAs and TAMs.")
+        st.markdown(_DA_BRANDING_HTML, unsafe_allow_html=True)
         st.divider()
 
 
@@ -105,7 +114,8 @@ def render_sidebar_footer() -> None:
 
         if scc_mode:
             st.divider()
-            if st.button("🔄 Reset Demo", use_container_width=True, help="Clear your session and start fresh"):
+            st.markdown(_RESET_BTN_CSS, unsafe_allow_html=True)
+            if st.button("↺\u2002Reset Demo", use_container_width=True, help="Clear your session and start fresh"):
                 if "token" in st.query_params:
                     del st.query_params["token"]
                 st.session_state.clear()
