@@ -30,4 +30,11 @@ DEMO_SESSIONS_DIR: Path = Path(__file__).parent / "data" / "demo_sessions"
 # When running on Streamlit Community Cloud, isolate each browser session
 # to its own subdirectory so concurrent demo users don't see each other's data.
 # Set SCC_MODE=true in the SCC secrets dashboard. Never set locally.
-SCC_MODE: bool = os.getenv("SCC_MODE", "false").lower() == "true"
+def _get_scc_mode() -> bool:
+    try:
+        import streamlit as st
+        return str(st.secrets.get("SCC_MODE", os.getenv("SCC_MODE", "false"))).lower() == "true"
+    except Exception:
+        return os.getenv("SCC_MODE", "false").lower() == "true"
+
+SCC_MODE: bool = _get_scc_mode()

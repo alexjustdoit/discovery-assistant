@@ -15,7 +15,7 @@ def render_sidebar() -> None:
             has_claude = bool(os.getenv("ANTHROPIC_API_KEY"))
             st.success(f"LLM: OpenAI + {'Claude' if has_claude else 'OpenAI only'}", icon="☁️")
 
-        if os.getenv("SCC_MODE", "false").lower() == "true":
+        if str(st.secrets.get("SCC_MODE", os.getenv("SCC_MODE", "false"))).lower() == "true":
             st.divider()
             if st.button("🔄 Reset Demo", use_container_width=True, help="Clear your session and start fresh"):
                 if "token" in st.query_params:
