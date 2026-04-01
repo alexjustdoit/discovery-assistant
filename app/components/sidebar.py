@@ -15,7 +15,7 @@ _DA_BRANDING_HTML = """
     </svg>
   </div>
   <p style="font-size: 1.75rem; font-weight: 700; line-height: 1.2; margin: 0 0 0.2rem 0;">Discovery Assistant</p>
-  <p style="font-size: 0.875rem; opacity: 0.6; margin: 0; line-height: 1.4;">AI-Powered Customer Engagement for SAs and TAMs</p>
+  <p style="font-size: 0.875rem; opacity: 0.6; margin: 0; line-height: 1.4;">AI-Powered Discovery for SAs and TAMs</p>
 </div>
 """
 
@@ -109,8 +109,6 @@ def render_sidebar_footer() -> None:
                     st.warning("Set OPENAI_API_KEY in .env")
                 if has_anthropic:
                     st.caption("✅ Anthropic key set")
-
-        st.caption("Python · Streamlit · Ollama · OpenAI · Anthropic")
 
         if scc_mode:
             st.divider()
