@@ -29,7 +29,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-_pages = [
+_main_pages = [
     st.Page("pages/Home.py", title="Home"),
     st.Page("pages/New_Engagement.py", title="New Engagement"),
     st.Page("pages/Discovery_Playbook.py", title="Discovery Playbook"),
@@ -37,13 +37,20 @@ _pages = [
     st.Page("pages/Discovery_Summary.py", title="Discovery Summary"),
 ]
 
-pg = st.navigation(_pages, position="hidden")
+_dev_pages = [
+    st.Page("pages/Technical_Info.py", title="Technical Info"),
+]
+
+pg = st.navigation(_main_pages + _dev_pages, position="hidden")
 
 render_sidebar_header()
 
 with st.sidebar:
-    for page in _pages:
+    for page in _main_pages:
         st.page_link(page)
+    with st.expander("Developers"):
+        for page in _dev_pages:
+            st.page_link(page)
 
 pg.run()
 render_sidebar_footer()
