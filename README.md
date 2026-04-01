@@ -8,7 +8,7 @@ Paste in customer context, get a tailored discovery playbook, work through it on
 
 > **Note:** Hosted on Streamlit's free tier — the app sleeps after a period of inactivity. If you see a "This app has gone to sleep" screen, click the wake-up button and allow 30–60 seconds to start.
 
-![App screenshot](docs/screenshot.png) 
+![App screenshot](docs/screenshot.png)
 
 ---
 
@@ -39,7 +39,13 @@ Each engagement card shows a composite depth score (0–100%) answering "how wel
 
 ---
 
-## Architecture & design decisions
+## Architecture
+
+```
+LLM Router → Ollama (local, free)           ← development / zero API cost
+           → GPT-5.4-nano (OpenAI API)      ← question generation (high volume, structured)
+           → Claude Haiku 4.5 (Anthropic)   ← summaries and email (quality-sensitive)
+```
 
 **LLM routing**
 Two providers, routed by a `quality_required` flag. Question generation uses GPT-5.4-nano (high volume, structured output, cost-sensitive). Summaries and email drafts use Claude Haiku (higher quality, lower frequency). A local Ollama path (`USE_LOCAL_LLM=true`) runs everything through llama3.1:8b for zero API cost during development.
@@ -105,3 +111,43 @@ OLLAMA_BASE_URL=http://localhost:11434
 ```bash
 pytest tests/ -v
 ```
+
+## Project Structure
+
+```
+discovery-assistant/
+├── app/
+│   ├── streamlit_app.py        # entry point and navigation
+│   ├── components/             # sidebar header/footer
+│   └── pages/                  # Home, New Engagement, Discovery Playbook,
+│                               # Touchpoint Log, Discovery Summary, Technical Info
+├── features/                   # question_generation, summary_generation, email_generation
+├── llm/
+│   ├── router.py               # USE_LOCAL_LLM routing + quality_required logic
+│   └── providers/              # OllamaProvider, OpenAIProvider, ClaudeProvider
+├── data/
+│   ├── models.py               # Session, DiscoveryQuestion, Meeting, Summary (Pydantic)
+│   ├── store.py                # file-based persistence; only layer touching the filesystem
+│   └── sessions/               # persisted session JSON files
+└── tests/                      # pytest suite (45 tests, LLM calls mocked)
+```
+
+---
+
+## Portfolio Talking Points
+
+**LLM engineering**
+- Provider abstraction — OpenAI, Anthropic, and Ollama behind a single router interface; `quality_required` flag routes high-stakes generation to Claude automatically
+- Structured outputs throughout — every LLM call returns a typed Pydantic schema, not raw text; question banks, summaries, and email drafts are all validated
+- Ollama schema compatibility fix — local models fail with Pydantic's raw `$defs`/`$ref` JSON schema; solved with a `_schema_to_example()` method that injects a clean example object into the system prompt instead
+- Zero-cost local development path — full feature parity between Ollama and API providers with a single env flag
+
+**Product and domain depth**
+- Models the real SA/TAM discovery workflow end to end: customer brief → question bank → call notes → synthesis → follow-up email
+- Context-aware question generation — same engine produces different question sets for a pre-sales SA discovery versus a post-sales TAM renewal
+- Discovery depth score gives a meaningful signal of coverage quality, weighted separately from checkbox completion
+
+**Engineering decisions**
+- Flat JSON persistence with a clean storage boundary — zero-config local dev, swap for a database without touching anything outside `data/store.py`
+- 45-test suite with all LLM calls mocked — covers model behavior, serialization roundtrips, and feature logic
+- Streamlit UX patterns: cross-iframe scroll, `on_change` callbacks for inline editing, highlight state cleared without full reruns
