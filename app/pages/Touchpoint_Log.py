@@ -1,8 +1,12 @@
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 from datetime import date
 
 import streamlit as st
 
-from app.components.engagement_nav import render_engagement_nav  # also ensures sys.path
+from app.components.engagement_nav import render_engagement_nav
 import config  # noqa: F401
 from data.models import Meeting
 from data.store import list_sessions, load_session, save_session

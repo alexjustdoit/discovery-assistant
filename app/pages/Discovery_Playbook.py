@@ -1,7 +1,11 @@
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 import streamlit as st
 import streamlit.components.v1 as components
 
-from app.components.engagement_nav import render_engagement_nav  # also ensures sys.path
+from app.components.engagement_nav import render_engagement_nav
 import config  # noqa: F401
 from data.models import Question
 from data.store import list_sessions, load_session, save_session
