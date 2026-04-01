@@ -30,11 +30,11 @@ st.set_page_config(
 )
 
 _pages = [
-    st.Page("pages/Home.py", title="Home", icon="🏠"),
-    st.Page("pages/New_Engagement.py", title="New Engagement", icon="➕"),
-    st.Page("pages/Discovery_Playbook.py", title="Discovery Playbook", icon="📋"),
-    st.Page("pages/Touchpoint_Log.py", title="Touchpoint Log", icon="🗓️"),
-    st.Page("pages/Discovery_Summary.py", title="Discovery Summary", icon="📄"),
+    st.Page("pages/Home.py", title="Home"),
+    st.Page("pages/New_Engagement.py", title="New Engagement"),
+    st.Page("pages/Discovery_Playbook.py", title="Discovery Playbook"),
+    st.Page("pages/Touchpoint_Log.py", title="Touchpoint Log"),
+    st.Page("pages/Discovery_Summary.py", title="Discovery Summary"),
 ]
 
 pg = st.navigation(_pages, position="hidden")
