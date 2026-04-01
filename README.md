@@ -8,6 +8,8 @@ Paste in customer context, get a tailored discovery playbook, work through it on
 
 > **Note:** Hosted on Streamlit's free tier — the app sleeps after a period of inactivity. If you see a "This app has gone to sleep" screen, click the wake-up button and allow 30–60 seconds to start.
 
+![App screenshot](docs/screenshot.png) 
+
 ---
 
 ## Why I built this
