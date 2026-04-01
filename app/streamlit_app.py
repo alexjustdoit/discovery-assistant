@@ -48,6 +48,11 @@ from data.store import seed_demo_sessions
 if not st.session_state.get("_seeded"):
     seed_demo_sessions()
     st.session_state["_seeded"] = True
+    # Force a rerun on cold start so CSS and layout apply on a warm connection.
+    # Without this, the default Streamlit nav ("streamlit app") can render before
+    # the Python-injected CSS arrives, leaving the sidebar broken until the user
+    # navigates manually.
+    st.rerun()
 
 render_sidebar_header()
 
