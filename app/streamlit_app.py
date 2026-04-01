@@ -17,7 +17,7 @@ except Exception:
     pass
 
 import config  # noqa: F401 — must be loaded after secrets injection
-from app.components.sidebar import render_sidebar
+from app.components.sidebar import render_sidebar_header, render_sidebar_footer
 from data.store import seed_demo_sessions
 
 seed_demo_sessions()
@@ -39,10 +39,11 @@ _pages = [
 
 pg = st.navigation(_pages, position="hidden")
 
-render_sidebar()
+render_sidebar_header()
 
 with st.sidebar:
     for page in _pages:
         st.page_link(page)
 
 pg.run()
+render_sidebar_footer()

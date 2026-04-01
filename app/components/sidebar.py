@@ -26,10 +26,38 @@ section[data-testid="stSidebar"] [data-testid="stSidebarHeader"] {
     height: auto !important;
     padding: 0 !important;
 }
+[data-testid="stSidebarContent"] {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 100vh !important;
+}
+[data-testid="stSidebarUserContent"] {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    padding-top: 0.5rem !important;
+}
+[data-testid="stSidebarUserContent"] > div:first-child {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+}
+[data-testid="stSidebarUserContent"] > div:first-child > [data-testid="stVerticalBlock"] {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+}
+.element-container:has(.sidebar-footer-spacer) {
+    flex: 1 !important;
+    min-height: 0 !important;
+}
 </style>"""
 
 
-def render_sidebar() -> None:
+def render_sidebar_header() -> None:
     with st.sidebar:
         st.markdown(_SIDEBAR_CSS, unsafe_allow_html=True)
         st.markdown(_DA_ICON_SVG, unsafe_allow_html=True)
@@ -37,14 +65,45 @@ def render_sidebar() -> None:
         st.caption("Customer engagement intelligence for SAs and TAMs.")
         st.divider()
 
-        use_local = os.getenv("USE_LOCAL_LLM", "true").lower() == "true"
-        if use_local:
-            st.info("LLM: Ollama (local)", icon="🏠")
-        else:
-            has_claude = bool(os.getenv("ANTHROPIC_API_KEY"))
-            st.success(f"LLM: OpenAI + {'Claude' if has_claude else 'OpenAI only'}", icon="☁️")
 
-        if str(st.secrets.get("SCC_MODE", os.getenv("SCC_MODE", "false"))).lower() == "true":
+def render_sidebar_footer() -> None:
+    with st.sidebar:
+        st.markdown('<div class="sidebar-footer-spacer"></div>', unsafe_allow_html=True)
+        st.divider()
+        scc_mode = str(st.secrets.get("SCC_MODE", os.getenv("SCC_MODE", "false"))).lower() == "true"
+
+        st.subheader("LLM Provider")
+        if scc_mode:
+            st.toggle(
+                "Use Local LLM (Ollama)",
+                value=False,
+                disabled=True,
+                help="Local Ollama is not available on the hosted demo — the app uses OpenAI (standard tasks) and Anthropic Claude (quality tasks) automatically.",
+            )
+            st.caption("Demo uses OpenAI + Anthropic · Local Ollama available when self-hosted")
+        else:
+            use_local = st.toggle(
+                "Use Local LLM (Ollama)",
+                value=os.getenv("USE_LOCAL_LLM", "true").lower() == "true",
+                help="Toggle between free local Ollama and API providers",
+            )
+            os.environ["USE_LOCAL_LLM"] = "true" if use_local else "false"
+
+            if use_local:
+                st.caption("Local mode · Free · requires Ollama")
+            else:
+                has_openai = bool(os.getenv("OPENAI_API_KEY"))
+                has_anthropic = bool(os.getenv("ANTHROPIC_API_KEY"))
+                if has_openai:
+                    st.caption("✅ OpenAI key set")
+                else:
+                    st.warning("Set OPENAI_API_KEY in .env")
+                if has_anthropic:
+                    st.caption("✅ Anthropic key set")
+
+        st.caption("Python · Streamlit · Ollama · OpenAI · Anthropic")
+
+        if scc_mode:
             st.divider()
             if st.button("🔄 Reset Demo", use_container_width=True, help="Clear your session and start fresh"):
                 if "token" in st.query_params:
