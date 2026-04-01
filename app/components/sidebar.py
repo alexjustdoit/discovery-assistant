@@ -1,5 +1,6 @@
 import os
 import streamlit as st
+from config import SCC_MODE
 
 
 _DA_BRANDING_HTML = """
@@ -85,7 +86,7 @@ def render_sidebar_footer(dev_pages=None) -> None:
     with st.sidebar:
         st.markdown('<div class="sidebar-footer-spacer"></div>', unsafe_allow_html=True)
         st.divider()
-        scc_mode = str(st.secrets.get("SCC_MODE", os.getenv("SCC_MODE", "false"))).lower() == "true"
+        scc_mode = SCC_MODE
 
         st.subheader("LLM Provider")
         if scc_mode:

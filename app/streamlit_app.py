@@ -45,7 +45,9 @@ import config  # noqa: F401 — must be loaded after secrets injection
 from app.components.sidebar import render_sidebar_header, render_sidebar_footer
 from data.store import seed_demo_sessions
 
-seed_demo_sessions()
+if not st.session_state.get("_seeded"):
+    seed_demo_sessions()
+    st.session_state["_seeded"] = True
 
 render_sidebar_header()
 

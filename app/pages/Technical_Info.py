@@ -4,6 +4,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 import pandas as pd
+import pydantic
 import streamlit as st
 
 import config  # noqa: F401
@@ -187,14 +188,11 @@ except Exception as e:
 st.divider()
 st.subheader("Stack")
 
-import streamlit as _st
-import pydantic
-
 col1, col2, col3 = st.columns(3)
 with col1:
     st.metric("Python", f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}")
 with col2:
-    st.metric("Streamlit", _st.__version__)
+    st.metric("Streamlit", st.__version__)
 with col3:
     st.metric("Pydantic", pydantic.__version__)
 
