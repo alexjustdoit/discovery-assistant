@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.1] — 2026-04-01
+
+### Fixed
+- Sidebar showing Streamlit's default auto-discovered nav after SCC reboot — added CSS to unconditionally hide `[data-testid="stSidebarNav"]` regardless of `position="hidden"` timing
+
+### Changed
+- README: added cold-start note near the demo link explaining the Streamlit free tier sleep behavior
+
+---
+
 ## [1.1.0] — 2026-03-31
 
 ### Added
