@@ -20,6 +20,12 @@ _DA_BRANDING_HTML = """
 """
 
 _SIDEBAR_CSS = """<style>
+/* Hide the default Streamlit auto-discovered nav regardless of position= timing */
+[data-testid="stSidebarNav"],
+[data-testid="stSidebarNavItems"],
+[data-testid="stSidebarNavLink"] {
+    display: none !important;
+}
 section[data-testid="stSidebar"] [data-testid="stLogoSpacer"] {
     display: none !important;
     height: 0 !important;

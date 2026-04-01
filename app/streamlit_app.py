@@ -16,12 +16,9 @@ try:
 except Exception:
     pass
 
-import config  # noqa: F401 — must be loaded after secrets injection
-from app.components.sidebar import render_sidebar_header, render_sidebar_footer
-from data.store import seed_demo_sessions
-
-seed_demo_sessions()
-
+# page_config and navigation must be registered before any import that could
+# trigger a rerun (e.g. seed_demo_sessions setting st.query_params on cold start).
+# Registering position="hidden" here ensures auto-discovery never flashes.
 st.set_page_config(
     page_title="Discovery Assistant",
     page_icon="🔍",
@@ -42,6 +39,13 @@ _dev_pages = [
 ]
 
 pg = st.navigation(_main_pages + _dev_pages, position="hidden")
+
+# Remaining imports and setup after navigation is registered
+import config  # noqa: F401 — must be loaded after secrets injection
+from app.components.sidebar import render_sidebar_header, render_sidebar_footer
+from data.store import seed_demo_sessions
+
+seed_demo_sessions()
 
 render_sidebar_header()
 
