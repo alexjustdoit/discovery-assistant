@@ -6,7 +6,7 @@ Paste in customer context, get a tailored discovery playbook, work through it on
 
 **[Try the live demo →](https://discovery-assistant.streamlit.app)**
 
-> **Note:** Hosted on Streamlit's free tier, which sleeps after ~7 days of inactivity. If you see a "This app has gone to sleep" screen, click the wake-up button and wait ~30 seconds.
+> **Note:** Hosted on Streamlit's free tier — the app sleeps after a period of inactivity. If you see a "This app has gone to sleep" screen, click the wake-up button and allow 30–60 seconds to start.
 
 ---
 
