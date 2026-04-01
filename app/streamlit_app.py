@@ -29,15 +29,20 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-pages = st.navigation(
-    [
-        st.Page("pages/Home.py", title="Home", icon="🏠"),
-        st.Page("pages/New_Engagement.py", title="New Engagement", icon="➕"),
-        st.Page("pages/Discovery_Playbook.py", title="Discovery Playbook", icon="📋"),
-        st.Page("pages/Touchpoint_Log.py", title="Touchpoint Log", icon="🗓️"),
-        st.Page("pages/Discovery_Summary.py", title="Discovery Summary", icon="📄"),
-    ]
-)
+_pages = [
+    st.Page("pages/Home.py", title="Home", icon="🏠"),
+    st.Page("pages/New_Engagement.py", title="New Engagement", icon="➕"),
+    st.Page("pages/Discovery_Playbook.py", title="Discovery Playbook", icon="📋"),
+    st.Page("pages/Touchpoint_Log.py", title="Touchpoint Log", icon="🗓️"),
+    st.Page("pages/Discovery_Summary.py", title="Discovery Summary", icon="📄"),
+]
+
+pg = st.navigation(_pages, position="hidden")
 
 render_sidebar()
-pages.run()
+
+with st.sidebar:
+    for page in _pages:
+        st.page_link(page)
+
+pg.run()
