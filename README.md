@@ -34,8 +34,7 @@ Two demo engagements are pre-loaded to show the full workflow without any setup:
 
 **5. Follow-up Email** — draft a ready-to-send post-call email from the summary. Editable, persistent, auto-cleared if the summary is edited.
 
-**Discovery depth score**
-Each engagement card shows a composite depth score (0–100%) answering "how well do I actually understand this customer?" — separate from how many questions have been marked asked. Weights: notes written on questions (60%), categories with at least one answer (20%), touchpoints logged (10%), summary exists (10%). The goal is a signal that reflects genuine discovery quality, not just checkbox activity. Formula lives in `Session.discovery_depth()` in `data/models.py`.
+**Discovery depth score** — Each engagement card shows a composite depth score (0–100%) answering "how well do I actually understand this customer?" — separate from how many questions have been marked asked. Weights: notes written on questions (60%), categories with at least one answer (20%), touchpoints logged (10%), summary exists (10%). The goal is a signal that reflects genuine discovery quality, not just checkbox activity. Formula lives in `Session.discovery_depth()` in `data/models.py`.
 
 ---
 
@@ -47,26 +46,21 @@ LLM Router → Ollama (local, free)           ← development / zero API cost
            → Claude Haiku 4.5 (Anthropic)   ← summaries and email (quality-sensitive)
 ```
 
-**LLM routing**
-Two providers, routed by a `quality_required` flag. Question generation uses GPT-5.4-nano (high volume, structured output, cost-sensitive). Summaries and email drafts use Claude Haiku (higher quality, lower frequency). A local Ollama path (`USE_LOCAL_LLM=true`) runs everything through llama3.1:8b for zero API cost during development.
+**LLM routing** — Two providers, routed by a `quality_required` flag. Question generation uses GPT-5.4-nano (high volume, structured output, cost-sensitive). Summaries and email drafts use Claude Haiku (higher quality, lower frequency). A local Ollama path (`USE_LOCAL_LLM=true`) runs everything through llama3.1:8b for zero API cost during development.
 
-**Structured output with Ollama**
-Local models struggle with Pydantic's raw JSON schema (`$defs`/`$ref` format) — llama3.1:8b would echo the schema definition back instead of returning data. The fix: a `_schema_to_example()` method that walks the schema and produces a clean example JSON object (`{"questions": [{"category": "...", "text": "...", "follow_ups": ["..."]}]}`). This is injected into the system prompt as a concrete format example rather than an abstract schema.
+**Structured output with Ollama** — Local models struggle with Pydantic's raw JSON schema (`$defs`/`$ref` format) — llama3.1:8b would echo the schema definition back instead of returning data. The fix: a `_schema_to_example()` method that walks the schema and produces a clean example JSON object (`{"questions": [{"category": "...", "text": "...", "follow_ups": ["..."]}]}`). This is injected into the system prompt as a concrete format example rather than an abstract schema.
 
-**Data model**
-Single `Session` object is the source of truth for everything — context, questions, meetings, summary, email draft. Persisted as JSON via Pydantic's model serialization. No database; file-based storage keeps the local dev experience zero-config and makes the data inspectable. The `Session` model handles backward compatibility for fields added over time (all new fields have defaults).
+**Data model** — Single `Session` object is the source of truth for everything — context, questions, meetings, summary, email draft. Persisted as JSON via Pydantic's model serialization. No database; file-based storage keeps the local dev experience zero-config and makes the data inspectable. The `Session` model handles backward compatibility for fields added over time (all new fields have defaults).
 
-**Streamlit patterns**
+**Streamlit patterns:**
 - `st.session_state` carries `active_session_id` across page navigation so the engagement selector pre-selects correctly on every page
 - `on_change` callbacks on question checkboxes and note textareas clear the "new question" highlight set on first interaction without a full rerun cycle
 - `st.components.v1.html` with `window.parent.document.getElementById` triggers smooth scroll to newly promoted follow-up questions across the iframe boundary
 - Inline question editing uses a session_state set (`editing_question_ids`) to toggle between view and edit mode within the same render pass
 
-**Testing**
-45 tests, all LLM calls mocked via `unittest.mock.patch`. Tests cover model behavior, JSON serialization roundtrips, session persistence, question generation logic, summary generation, and email generation. The goal is testing behavior (what the function returns given input) rather than implementation (how it calls the LLM).
+**Testing** — 45 tests, all LLM calls mocked via `unittest.mock.patch`. Tests cover model behavior, JSON serialization roundtrips, session persistence, question generation logic, summary generation, and email generation. The goal is testing behavior (what the function returns given input) rather than implementation (how it calls the LLM).
 
-**On the persistence model**
-I used flat JSON files rather than a database deliberately. For a single-user portfolio tool it keeps setup to `git clone` and `pip install`, the data is directly inspectable, and Pydantic handles all serialization cleanly. The tradeoff I'm making is obvious: no concurrent access, no transactions, no query capability. In a production context I'd swap in SQLite for a single-user local tool or Postgres for multi-user, add proper auth, and move LLM generation to a background job queue so the UI isn't blocked during generation. The architecture is designed so that swap is contained — `data/store.py` is the only layer that touches the filesystem, and nothing else assumes file-based storage.
+**On the persistence model** — I used flat JSON files rather than a database deliberately. For a single-user portfolio tool it keeps setup to `git clone` and `pip install`, the data is directly inspectable, and Pydantic handles all serialization cleanly. The tradeoff I'm making is obvious: no concurrent access, no transactions, no query capability. In a production context I'd swap in SQLite for a single-user local tool or Postgres for multi-user, add proper auth, and move LLM generation to a background job queue so the UI isn't blocked during generation. The architecture is designed so that swap is contained — `data/store.py` is the only layer that touches the filesystem, and nothing else assumes file-based storage.
 
 ---
 
