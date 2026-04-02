@@ -125,23 +125,3 @@ discovery-assistant/
 │   └── sessions/               # persisted session JSON files
 └── tests/                      # pytest suite (45 tests, LLM calls mocked)
 ```
-
----
-
-## Portfolio Talking Points
-
-**LLM engineering**
-- Provider abstraction — OpenAI, Anthropic, and Ollama behind a single router interface; `quality_required` flag routes high-stakes generation to Claude automatically
-- Structured outputs throughout — every LLM call returns a typed Pydantic schema, not raw text; question banks, summaries, and email drafts are all validated
-- Ollama schema compatibility fix — local models fail with Pydantic's raw `$defs`/`$ref` JSON schema; solved with a `_schema_to_example()` method that injects a clean example object into the system prompt instead
-- Zero-cost local development path — full feature parity between Ollama and API providers with a single env flag
-
-**Product and domain depth**
-- Models the real SA/TAM discovery workflow end to end: customer brief → question bank → call notes → synthesis → follow-up email
-- Context-aware question generation — same engine produces different question sets for a pre-sales SA discovery versus a post-sales TAM renewal
-- Discovery depth score gives a meaningful signal of coverage quality, weighted separately from checkbox completion
-
-**Engineering decisions**
-- Flat JSON persistence with a clean storage boundary — zero-config local dev, swap for a database without touching anything outside `data/store.py`
-- 45-test suite with all LLM calls mocked — covers model behavior, serialization roundtrips, and feature logic
-- Streamlit UX patterns: cross-iframe scroll, `on_change` callbacks for inline editing, highlight state cleared without full reruns
