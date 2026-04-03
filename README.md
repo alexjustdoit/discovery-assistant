@@ -58,7 +58,7 @@ LLM Router → Ollama (local, free)           ← development / zero API cost
 - `st.components.v1.html` with `window.parent.document.getElementById` triggers smooth scroll to newly promoted follow-up questions across the iframe boundary
 - Inline question editing uses a session_state set (`editing_question_ids`) to toggle between view and edit mode within the same render pass
 
-**Testing** — 45 tests, all LLM calls mocked via `unittest.mock.patch`. Tests cover model behavior, JSON serialization roundtrips, session persistence, question generation logic, summary generation, and email generation. The goal is testing behavior (what the function returns given input) rather than implementation (how it calls the LLM).
+**Testing** — 58 tests, all LLM calls mocked via `unittest.mock.patch`. Tests cover model behavior, JSON serialization roundtrips, session persistence, question generation logic, summary generation, email generation, archive/restore, and discovery depth scoring. The goal is testing behavior (what the function returns given input) rather than implementation (how it calls the LLM).
 
 **On the persistence model** — I used flat JSON files rather than a database deliberately. For a single-user portfolio tool it keeps setup to `git clone` and `pip install`, the data is directly inspectable, and Pydantic handles all serialization cleanly. The tradeoff I'm making is obvious: no concurrent access, no transactions, no query capability. In a production context I'd swap in SQLite for a single-user local tool or Postgres for multi-user, add proper auth, and move LLM generation to a background job queue so the UI isn't blocked during generation. The architecture is designed so that swap is contained — `data/store.py` is the only layer that touches the filesystem, and nothing else assumes file-based storage.
 
@@ -105,6 +105,8 @@ OLLAMA_BASE_URL=http://localhost:11434
 ```bash
 pytest tests/ -v
 ```
+
+58 tests covering models, persistence, question/summary/email generation, archive/restore, discovery depth scoring, and session management.
 
 ## Project Structure
 
