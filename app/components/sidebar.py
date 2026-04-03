@@ -65,6 +65,12 @@ section[data-testid="stSidebar"] [data-testid="stSidebarHeader"] {
     flex: 1 !important;
     min-height: 0 !important;
 }
+[data-testid="collapsedControl"] {
+    background-color: rgb(38, 39, 48) !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 2px !important;
+}
 </style>"""
 
 _RESET_BTN_CSS = """<style>
