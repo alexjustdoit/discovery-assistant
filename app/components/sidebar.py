@@ -65,11 +65,15 @@ section[data-testid="stSidebar"] [data-testid="stSidebarHeader"] {
     flex: 1 !important;
     min-height: 0 !important;
 }
-[data-testid="collapsedControl"] {
+[data-testid="collapsedControl"],
+[data-testid="stSidebarCollapseButton"] {
+    position: fixed !important;
+    top: 0.5rem !important;
+    left: 0.5rem !important;
+    z-index: 1000 !important;
     background-color: rgb(38, 39, 48) !important;
     border-radius: 8px !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    padding: 2px !important;
 }
 </style>"""
 
